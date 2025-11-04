@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { TabType } from '@/constants/tabTypes';
+import { TabType } from '@/types/tabTypes';
 
 
 interface TabContextType {
