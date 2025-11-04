@@ -5,7 +5,7 @@ import { DashboardView } from '@/components/views/DashboardView';
 import { TransactionsView } from '@/components/views/TransactionView';
 import { mockAccount, mockMetrics, mockTransactions } from '@/data/mockData';
 import { useTab } from '@/contexts/TabContext';
-import { TabConst } from '@/constants/tabTypes';
+import { TabConst } from '@/types/tabTypes';
 
 export default function Home() {
   const { activeTab } = useTab();
