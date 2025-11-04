@@ -4,7 +4,7 @@ export interface Transaction {
   date: string;
   reference: string;
   amount: number;
-  type: 'Withdrawal' | 'Transfer' | 'Deposit';
+  type: 'Saque' | 'Transferência' | 'Deposito';
 }
 
 export interface TransactionListProps {

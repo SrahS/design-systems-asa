@@ -11,9 +11,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', active: true },
-  { label: 'Transactions', active: false },
-  { label: 'Cards', active: false, badge: 'Soon' },
-  { label: 'Settings', active: false, badge: 'Soon' },
+  { label: 'Transações', active: false },
+  { label: 'Configurações', active: false, badge: 'Em breve' },
 ];
 
 export function Navigation() {
@@ -30,6 +29,7 @@ export function Navigation() {
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-900'
           }`}
+          disabled={!!item.badge}
         >
           {item.label}
           {item.badge && (
