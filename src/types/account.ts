@@ -2,7 +2,7 @@ export interface Account {
   name: string;
   number: string;
   routing: string;
-  status: 'Active' | 'Inactive' | 'Suspended';
+  status: 'Ativo' | 'Inativo' | 'Suspenso';
   balance: number;
 }
 

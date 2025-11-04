@@ -29,7 +29,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
             <p className={`font-semibold ${
               transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
-              {transaction.amount >= 0 ? '+' : ''}${Math.abs(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {transaction.amount >= 0 ? '+' : ''}R$ {Math.abs(transaction.amount).toLocaleString('pt-br', { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs text-gray-500">{transaction.type}</p>
           </div>
