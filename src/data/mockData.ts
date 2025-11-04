@@ -36,7 +36,7 @@ export const createInitialAccount = (transactions: Transaction[]): Account => {
   const balance = totalDeposits - totalWithdrawals - totalTransfers;
 
   return {
-    name: 'Bem vindo, Kawai',
+    name: 'Bem vindo, Alisson',
     number: '****4892',
     routing: '12345',
     status: 'Ativo',
