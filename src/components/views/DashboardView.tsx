@@ -80,7 +80,7 @@ export function DashboardView() {
           <ActionCard
             icon={<Plus className="w-6 h-6 text-blue-600" />}
             title="Nova Transação"
-            description="Adicionar um depósito, retirada ou transferência"
+            description="Adicionar um depósito, saque ou transferência"
             onClick={handleNewTransaction}
           />
           <ActionCard
