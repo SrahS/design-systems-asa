@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { TabProvider } from '@/contexts/TabContext';
+import { TransactionProvider } from '@/contexts/TransactionContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="pt">
       <body className={inter.className}>
-        <TabProvider>
-          {children}
-        </TabProvider>
+        <TransactionProvider>
+          <TabProvider>
+            {children}
+          </TabProvider>
+        </TransactionProvider>
       </body>
     </html>
   );

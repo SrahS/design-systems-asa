@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/Badge';
 import { useTab } from '@/contexts/TabContext';
-import { TabType } from '@/constants/tabTypes';
+import { TabType } from '@/types/tabTypes';
 
 interface NavItem {
   label: TabType;

@@ -1,12 +1,4 @@
-import { Account, Metrics, Transaction } from '@/types';
-
-export const mockAccount: Account = {
-  name: 'Bem vindo, Alisson',
-  number: '****4892',
-  routing: '12345',
-  status: 'Ativo',
-  balance: 150.00,
-};
+import { Account, Metrics, Transaction, transactionTypes } from '@/types';
 
 export const mockMetrics: Metrics = {
   income: {
@@ -26,21 +18,30 @@ export const mockMetrics: Metrics = {
   },
 };
 
-export const mockTransactions: Transaction[] = [
-  {
-    id: 1,
-    name: 'teste 02',
-    date: 'Oct 25, 2025',
-    reference: 'Ref',
-    amount: -25000.00,
-    type: 'Saque',
-  },
-  {
-    id: 2,
-    name: 'teste',
-    date: 'Oct 20, 2025',
-    reference: 'Ref',
-    amount: -100.00,
-    type: 'Transferência',
-  },
-];
+export const initialTransactions: Transaction[] = [];
+
+export const createInitialAccount = (transactions: Transaction[]): Account => {
+  const totalDeposits = transactions
+    .filter(t => t.type === transactionTypes.Deposit)
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalWithdrawals = transactions
+    .filter(t => t.type === transactionTypes.Withdrawal)
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  const totalTransfers = transactions
+    .filter(t => t.type === transactionTypes.Transfer)
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  const balance = totalDeposits - totalWithdrawals - totalTransfers;
+
+  return {
+    name: 'Bem vindo, Kawai',
+    number: '****4892',
+    routing: '12345',
+    status: 'Ativo',
+    balance,
+  };
+};
+
+export const mockAccount = createInitialAccount(initialTransactions);
