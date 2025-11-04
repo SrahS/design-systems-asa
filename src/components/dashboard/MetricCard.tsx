@@ -33,7 +33,7 @@ export function MetricCard({ metric }: MetricCardProps) {
           <p className={`text-2xl font-bold mt-1 ${
             metric.amount >= 0 ? 'text-green-700' : 'text-red-700'
           }`}>
-            {metric.amount >= 0 ? '+' : ''}${Math.abs(metric.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {metric.amount >= 0 ? '+' : ''}R$ {Math.abs(metric.amount).toLocaleString('pt-br', { minimumFractionDigits: 2 })}
           </p>
         </div>
         <Icon className={`${iconColor} w-5 h-5`} />
