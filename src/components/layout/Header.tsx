@@ -23,8 +23,8 @@ export function Header({ accountName, accountNumber, status }: HeaderProps) {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Badge variant="success">{status}</Badge>
-            <Button variant="ghost">Logout</Button>
+            <Badge variant="outline">{status}</Badge>
+            <Button variant="primary">Logout</Button>
           </div>
         </div>
         <Navigation />
