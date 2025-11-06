@@ -30,12 +30,12 @@ export function TransactionList({
           >
             <div className="flex items-center gap-3 flex-1">
               <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-600">
+                <span className="text-sm font-family-sans text-gray-600">
                   {transaction.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <p className="font-medium text-gray-900">{transaction.name}</p>
+                <p className="font-family-sans text-gray-900">{transaction.name}</p>
                 <p className="text-xs text-gray-500">
                   {transaction.date} • {transaction.reference}
                 </p>
@@ -49,7 +49,7 @@ export function TransactionList({
                     transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}
                 >
-                  {transaction.amount >= 0 ? '+' : ''}R$
+                  {transaction.amount >= 0 ? '+' : '-'}R$
                   {Math.abs(transaction.amount).toLocaleString('pt-BR', {
                     minimumFractionDigits: 2,
                   })}

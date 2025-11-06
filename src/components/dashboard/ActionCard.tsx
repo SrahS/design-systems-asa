@@ -13,16 +13,32 @@ interface ActionCardProps {
 export function ActionCard({ icon, title, description, onClick }: ActionCardProps) {
   return (
     <Card 
-      className="p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+      variant="outline"
+      className="
+        hover:shadow-level-2 transition-shadow cursor-pointer
+      "
       onClick={onClick}
     >
       <div className="flex items-start gap-4">
-        <div className="p-2 bg-blue-50 rounded-lg">
+        <div className="
+          p-2 rounded-lg
+          bg-color-primary-50-on-light dark:bg-color-primary-950-on-dark
+        ">
           {icon}
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-600 mt-1">{description}</p>
+          <h3 className="
+            font-semibold
+            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+          ">
+            {title}
+          </h3>
+          <p className="
+            text-sm mt-1
+            text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark
+          ">
+            {description}
+          </p>
         </div>
       </div>
     </Card>

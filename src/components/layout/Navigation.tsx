@@ -17,28 +17,45 @@ const navItems: NavItem[] = [
 
 export function Navigation() {
   const { activeTab, setActiveTab } = useTab();
+  const textNormalClass = 'text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark';
+  const textHoverClass = 'hover:text-color-neutral-900-on-light dark:hover:text-color-neutral-100-on-dark';
+
+  const textActiveClass = 'text-color-primary-900-on-light dark:text-color-primary-dark-300-on-dark';
+  const borderActiveClass = 'border-color-primary-900-on-light dark:border-color-primary-dark-300-on-dark';
 
   return (
-    <nav className="flex gap-6 border-b border-gray-200">
-      {navItems.map((item) => (
-        <button
-          key={item.label}
-          onClick={() => setActiveTab(item.label)}
-          disabled={item.badge === 'Em breve'}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === item.label
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          } ${item.badge === 'Soon' ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {item.label}
-          {item.badge && (
-            <Badge variant="outline">
-              {item.badge}
-            </Badge>
-          )}
-        </button>
-      ))}
+    <nav className="
+      flex gap-6 border-b 
+      border-color-neutral-200-on-light dark:border-color-neutral-800-on-dark
+    ">
+      {navItems.map((item) => {
+        const isActive = activeTab === item.label;
+        const isDisabled = item.badge === 'Em breve';
+
+        return (
+          <button
+            key={item.label}
+            onClick={() => setActiveTab(item.label)}
+            disabled={isDisabled}
+            className={`
+              px-4 py-3 text-sm font-family-sans border-b-2 transition-colors flex items-center gap-2 
+              ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+              ${
+                isActive
+                  ? `border-b-2 ${borderActiveClass} ${textActiveClass}`
+                  : `border-transparent ${textNormalClass} ${textHoverClass}`
+              }
+            `}
+          >
+            {item.label}
+            {item.badge && (
+              <Badge variant="soon">
+                {item.badge}
+              </Badge>
+            )}
+          </button>
+        );
+      })}
     </nav>
   );
 }

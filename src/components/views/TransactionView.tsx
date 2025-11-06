@@ -37,19 +37,55 @@ export function TransactionsView() {
     <>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Todas as Transações</h1>
+          <h1 className="
+            text-2xl font-bold 
+            text-color-neutral-900-on-light
+            dark:text-color-neutral-50-on-dark
+          ">
+            Todas as Transações
+          </h1>
+          
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-              <Search className="w-4 h-4" />
+            <button className="
+              flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
+              border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
+              bg-white dark:bg-color-neutral-950-on-dark
+              hover:bg-color-neutral-100-on-light dark:hover:bg-color-neutral-900-on-dark
+              text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            ">
+              <Search className="
+                w-4 h-4 
+                text-color-neutral-700-on-light 
+                dark:text-color-neutral-300-on-dark
+              " />
               Pesquisar
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-              <Filter className="w-4 h-4" />
+            
+            <button className="
+              flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
+              border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
+              bg-white dark:bg-color-neutral-950-on-dark
+              hover:bg-color-neutral-100-on-light dark:hover:bg-color-neutral-900-on-dark
+              text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            ">
+              <Filter className="
+                w-4 h-4 
+                text-color-neutral-700-on-light 
+                dark:text-color-neutral-300-on-dark
+              " />
               Filtrar
             </button>
+            
             <button
               onClick={handleNewTransaction}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="
+                flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
+                bg-color-primary-800-on-light 
+                hover:bg-color-primary-900-on-light 
+                dark:bg-color-primary-dark-600-on-dark
+                dark:hover:bg-color-primary-dark-700-on-dark
+                text-white
+              "
             >
               <Plus className="w-4 h-4" />
               Adicionar Transação
@@ -57,9 +93,15 @@ export function TransactionsView() {
           </div>
         </div>
 
-        {/* Lista de Transações */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="
+          rounded-lg p-6 
+          bg-white dark:bg-color-neutral-950-on-dark
+          border border-color-neutral-200-on-light dark:border-color-neutral-900-on-dark
+        ">
+          <h2 className="
+            text-lg font-semibold mb-4
+            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+          ">
             Histórico de Transações ({transactions.length})
           </h2>
           <TransactionList
@@ -71,7 +113,6 @@ export function TransactionsView() {
         </div>
       </div>
 
-      {/* Modals */}
       <TransactionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

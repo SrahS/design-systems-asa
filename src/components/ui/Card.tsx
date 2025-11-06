@@ -8,16 +8,22 @@ const cardVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-ref-color-neutral-50-on-light shadow-level-1 border border-transparent',
+          'bg-color-neutral-50-on-light dark:bg-color-neutral-950-on-dark ' +
+          'shadow-level-1 dark:shadow-level-0 border border-transparent',
 
         elevated:
-          'bg-ref-color-neutral-50-on-light shadow-level-3 hover:shadow-level-4 transition-shadow border border-transparent',
+          'bg-color-neutral-50-on-light dark:bg-color-neutral-900-on-dark ' +
+          'shadow-level-3 hover:shadow-level-4 transition-shadow border border-transparent',
 
         outline:
-          'bg-ref-color-neutral-50-on-light border border-ref-color-neutral-300-on-light shadow-level-0 hover:border-ref-color-neutral-400-on-light',
+          'bg-color-neutral-50-on-light dark:bg-color-neutral-950-on-dark ' +
+          'border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark ' +
+          'shadow-level-0 hover:border-color-neutral-400-on-light dark:hover:border-color-neutral-600-on-dark',
         
         primary: 
-          'bg-ref-color-primary-50-on-light shadow-level-2 border border-ref-color-primary-400-on-light'
+          'bg-color-primary-50-on-light dark:bg-color-primary-950-on-dark ' +
+          'border border-color-primary-400-on-light dark:border-color-primary-dark-800-on-dark ' +
+          'shadow-level-2 dark:shadow-level-1'
       },
     },
     defaultVariants: {
@@ -49,4 +55,3 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 Card.displayName = 'Card';
 
 export { Card };
-

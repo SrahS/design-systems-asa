@@ -37,7 +37,7 @@ export const createInitialAccount = (transactions: Transaction[]): Account => {
 
   return {
     name: 'Bem vindo, Alisson',
-    number: '****4892',
+    number: '**** 4892',
     routing: '12345',
     status: 'Ativo',
     balance,

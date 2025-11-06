@@ -78,13 +78,29 @@ export function DashboardView() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ActionCard
-            icon={<Plus className="w-6 h-6 text-blue-600" />}
+            icon={
+              <Plus 
+                className="
+                  w-6 h-6 
+                  text-color-primary-800-on-light 
+                  dark:text-color-primary-dark-700-on-dark
+                " 
+              />
+            }
             title="Nova Transação"
             description="Adicionar um depósito, saque ou transferência"
             onClick={handleNewTransaction}
           />
           <ActionCard
-            icon={<List className="w-6 h-6 text-blue-600" />}
+            icon={
+              <List 
+                className="
+                  w-6 h-6 
+                  text-color-primary-800-on-light 
+                  dark:text-color-primary-dark-700-on-dark
+                " 
+              />
+            }
             title="Ver Todas as Transações"
             description="Veja seu histórico completo de transações"
             onClick={handleViewAllTransactions}
@@ -93,8 +109,22 @@ export function DashboardView() {
 
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Atividade Recente</h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            <h2 className="
+              text-xl font-bold 
+              text-color-neutral-900-on-light
+              dark:text-color-neutral-100-on-dark
+            ">
+              Atividade Recente
+            </h2>
+            <button 
+              className="
+                text-sm font-medium transition-colors
+                text-color-primary-600-on-light 
+                hover:text-color-primary-700-on-light 
+                dark:text-color-primary-dark-400-on-dark 
+                dark:hover:text-color-primary-default-on-dark
+              "
+            >
               Ver Todas
             </button>
           </div>

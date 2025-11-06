@@ -41,6 +41,11 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     }
   }, [transaction, isOpen]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -73,102 +78,149 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
   if (!isOpen) return null;
 
+  const isEditing = !!transaction;
+
+  const inputClassNames = `
+    w-full border rounded-lg px-3 py-2
+    border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
+    bg-white dark:bg-color-neutral-950-on-dark
+    text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+    focus:ring-2 focus:ring-color-primary-500-on-light dark:focus:ring-color-primary-dark-500-on-dark focus:border-transparent
+    placeholder:text-color-neutral-500-on-light dark:placeholder:text-color-neutral-600-on-dark
+  `;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-        <div className="flex items-center justify-between border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">
-            {transaction ? 'Editar Transação' : 'Nova Transação'}
+      <div className="
+        rounded-lg shadow-xl max-w-md w-full mx-4
+        bg-white dark:bg-color-neutral-950-on-dark
+      ">
+        
+        {/* Header */}
+        <div className="
+          flex items-center justify-between border-b p-6
+          border-color-neutral-200-on-light dark:border-color-neutral-900-on-dark
+        ">
+          <h2 className="
+            text-xl font-bold 
+            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+          ">
+            {isEditing ? 'Editar Transação' : 'Nova Transação'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="
+              text-color-neutral-500-on-light dark:text-color-neutral-400-on-dark
+              hover:text-color-neutral-700-on-light dark:hover:text-color-neutral-200-on-dark
+            "
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Formulário */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          
+          {/* Campo: Tipo de Transação */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="
+              block text-sm font-family-sans mb-2
+              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+            ">
               Tipo de Transação
             </label>
             <select
+              name="type"
               value={formData.type}
-              onChange={(e) =>
-                setFormData({ ...formData, type: e.target.value as any })
-              }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleChange}
+              className={inputClassNames}
             >
-              <option value="Depósito">Depósito</option>
-              <option value="Saque">Saque</option>
-              <option value="Transferência">Transferência</option>
+              <option value={transactionTypes.Deposit}>Depósito</option>
+              <option value={transactionTypes.Withdrawal}>Saque</option>
+              <option value={transactionTypes.Transfer}>Transferência</option>
             </select>
           </div>
 
+          {/* Campo: Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="
+              block text-sm font-family-sans mb-2
+              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+            ">
               Descrição
             </label>
             <input
               type="text"
+              name="name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={handleChange}
               placeholder="ex: Salário, Compras de Supermercado"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClassNames}
               required
             />
           </div>
 
+          {/* Campo: Valor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="
+              block text-sm font-family-sans mb-2
+              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+            ">
               Valor
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500">R$</span>
+              <span className="
+                absolute left-3 top-2 
+                text-color-neutral-500-on-light dark:text-color-neutral-600-on-dark
+              ">
+                R$
+              </span>
               <input
                 type="number"
+                name="amount"
                 value={formData.amount}
-                onChange={(e) =>
-                  setFormData({ ...formData, amount: e.target.value })
-                }
+                onChange={handleChange}
                 placeholder="0.00"
                 step="0.01"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 pl-9 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={`${inputClassNames} pl-9`}
                 required
               />
             </div>
           </div>
 
+          {/* Campo: Data */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="
+              block text-sm font-family-sans mb-2
+              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+            ">
               Data
             </label>
             <input
               type="date"
+              name="date"
               value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleChange}
+              className={inputClassNames}
               required
             />
           </div>
 
+          {/* Campo: Detalhes Adicionais (opcional) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="
+              block text-sm font-family-sans mb-2
+              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+            ">
               Detalhes Adicionais (opcional)
             </label>
             <textarea
+              name="description"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={handleChange as any}
               placeholder="Adicione quaisquer notas adicionais..."
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClassNames}
             />
           </div>
 
@@ -176,15 +228,21 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+              className="
+                flex-1 px-4 py-2 rounded-lg font-family-sans font-medium transition-colors
+                border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
+                text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+                hover:bg-color-neutral-50-on-light dark:hover:bg-color-neutral-900-on-dark
+              "
             >
               Cancelar
             </button>
+            
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+              className="flex-1 px-4 py-2 bg-primary-600-on-light text-white rounded-lg hover:bg-primary-700-on-light font-medium"
             >
-              {transaction ? 'Atualizar' : 'Criar'}
+              {isEditing ? 'Atualizar' : 'Criar'}
             </button>
           </div>
         </form>
