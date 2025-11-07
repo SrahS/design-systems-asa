@@ -39,8 +39,8 @@ export function TransactionsView() {
         <div className="flex items-center justify-between">
           <h1 className="
             text-2xl font-bold 
-            text-color-neutral-900-on-light
-            dark:text-color-neutral-50-on-dark
+            text-neutral-900-on-light
+            dark:text-neutral-50-on-dark
           ">
             Todas as Transações
           </h1>
@@ -49,14 +49,14 @@ export function TransactionsView() {
             <button className="
               flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
               border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-              bg-white dark:bg-color-neutral-950-on-dark
-              hover:bg-color-neutral-100-on-light dark:hover:bg-color-neutral-900-on-dark
-              text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+              bg-white dark:bg-primary-neutral-950-on-dark
+              hover:bg-primary-neutral-100-on-light dark:hover:bg-primary-neutral-900-on-dark
+              text-neutral-900-on-light dark:text-neutral-100-on-dark
             ">
               <Search className="
                 w-4 h-4 
-                text-color-neutral-700-on-light 
-                dark:text-color-neutral-300-on-dark
+                text-neutral-700-on-light 
+                dark:text-neutral-300-on-dark
               " />
               Pesquisar
             </button>
@@ -64,14 +64,14 @@ export function TransactionsView() {
             <button className="
               flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
               border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-              bg-white dark:bg-color-neutral-950-on-dark
-              hover:bg-color-neutral-100-on-light dark:hover:bg-color-neutral-900-on-dark
-              text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+              bg-white dark:bg-primary-neutral-950-on-dark
+              hover:bg-primary-neutral-100-on-light dark:hover:bg-primary-neutral-900-on-dark
+              text-neutral-900-on-light dark:text-neutral-100-on-dark
             ">
               <Filter className="
                 w-4 h-4 
-                text-color-neutral-700-on-light 
-                dark:text-color-neutral-300-on-dark
+                text-neutral-700-on-light 
+                dark:text-neutral-300-on-dark
               " />
               Filtrar
             </button>
@@ -80,10 +80,10 @@ export function TransactionsView() {
               onClick={handleNewTransaction}
               className="
                 flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
-                bg-color-primary-800-on-light 
-                hover:bg-color-primary-900-on-light 
-                dark:bg-color-primary-dark-600-on-dark
-                dark:hover:bg-color-primary-dark-700-on-dark
+                bg-primary-primary-800-on-light 
+                hover:bg-primary-primary-900-on-light 
+                dark:bg-primary-primary-dark-600-on-dark
+                dark:hover:bg-primary-primary-dark-700-on-dark
                 text-white
               "
             >
@@ -95,12 +95,12 @@ export function TransactionsView() {
 
         <div className="
           rounded-lg p-6 
-          bg-white dark:bg-color-neutral-950-on-dark
+          bg-white dark:bg-primary-neutral-950-on-dark
           border border-color-neutral-200-on-light dark:border-color-neutral-900-on-dark
         ">
           <h2 className="
             text-lg font-semibold mb-4
-            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            text-neutral-900-on-light dark:text-neutral-100-on-dark
           ">
             Histórico de Transações ({transactions.length})
           </h2>

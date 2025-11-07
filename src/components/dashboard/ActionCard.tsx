@@ -22,20 +22,20 @@ export function ActionCard({ icon, title, description, onClick }: ActionCardProp
       <div className="flex items-start gap-4">
         <div className="
           p-2 rounded-lg
-          bg-color-primary-50-on-light dark:bg-color-primary-950-on-dark
+          bg-primary-primary-50-on-light dark:bg-primary-primary-950-on-dark
         ">
           {icon}
         </div>
         <div>
           <h3 className="
             font-semibold
-            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            text-primary-1200-on-light dark:text-primary-100-on-dark
           ">
             {title}
           </h3>
           <p className="
             text-sm mt-1
-            text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark
+            text-primary-600-on-light dark:text-primary-400-on-dark
           ">
             {description}
           </p>

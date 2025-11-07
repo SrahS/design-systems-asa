@@ -13,7 +13,7 @@ interface HeaderProps {
 export function Header({ accountName, accountNumber, status }: HeaderProps) {
   return (
     <header className="
-      bg-white dark:bg-color-neutral-950-on-dark 
+      bg-primary-100-on-ligh
       border-b border-color-neutral-200-on-light dark:border-color-neutral-800-on-dark
     ">
       <div className="max-w-7xl mx-auto px-6 py-4">
@@ -25,8 +25,7 @@ export function Header({ accountName, accountNumber, status }: HeaderProps) {
             ">
               <span className="
                 font-bold text-sm 
-                /* Texto: Sempre Branco */
-                text-white
+                text-yellow-300
               ">
                 R$
               </span>
@@ -34,13 +33,13 @@ export function Header({ accountName, accountNumber, status }: HeaderProps) {
             <div>
               <h1 className="
                 text-xl font-bold 
-                text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+                text-primary-1200-on-light dark:text-primary-1200-on-dark
               ">
                 {accountName}
               </h1>
               <p className="
                 text-sm 
-                text-color-neutral-500-on-light dark:text-color-neutral-400-on-dark
+                text-primary-1200-on-light dark:text-primary-1200-on-dark
               ">
                 Conta {accountNumber}
               </p>

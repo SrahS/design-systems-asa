@@ -8,20 +8,20 @@ const cardVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-color-neutral-50-on-light dark:bg-color-neutral-950-on-dark ' +
+          'bg-primary-neutral-50-on-light dark:bg-primary-neutral-950-on-dark ' +
           'shadow-level-1 dark:shadow-level-0 border border-transparent',
 
         elevated:
-          'bg-color-neutral-50-on-light dark:bg-color-neutral-900-on-dark ' +
+          'bg-primary-neutral-50-on-light dark:bg-primary-neutral-900-on-dark ' +
           'shadow-level-3 hover:shadow-level-4 transition-shadow border border-transparent',
 
         outline:
-          'bg-color-neutral-50-on-light dark:bg-color-neutral-950-on-dark ' +
+          'bg-primary-neutral-50-on-light dark:bg-primary-neutral-950-on-dark ' +
           'border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark ' +
           'shadow-level-0 hover:border-color-neutral-400-on-light dark:hover:border-color-neutral-600-on-dark',
         
         primary: 
-          'bg-color-primary-50-on-light dark:bg-color-primary-950-on-dark ' +
+          'bg-primary-primary-50-on-light dark:bg-primary-primary-950-on-dark ' +
           'border border-color-primary-400-on-light dark:border-color-primary-dark-800-on-dark ' +
           'shadow-level-2 dark:shadow-level-1'
       },

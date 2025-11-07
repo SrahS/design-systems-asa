@@ -83,17 +83,17 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   const inputClassNames = `
     w-full border rounded-lg px-3 py-2
     border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-    bg-white dark:bg-color-neutral-950-on-dark
-    text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+    bg-white dark:bg-primary-neutral-950-on-dark
+    text-neutral-900-on-light dark:text-neutral-100-on-dark
     focus:ring-2 focus:ring-color-primary-500-on-light dark:focus:ring-color-primary-dark-500-on-dark focus:border-transparent
-    placeholder:text-color-neutral-500-on-light dark:placeholder:text-color-neutral-600-on-dark
+    placeholder:text-neutral-500-on-light dark:placeholder:text-neutral-600-on-dark
   `;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="
         rounded-lg shadow-xl max-w-md w-full mx-4
-        bg-white dark:bg-color-neutral-950-on-dark
+        bg-white dark:bg-primary-neutral-950-on-dark
       ">
         
         {/* Header */}
@@ -103,15 +103,15 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         ">
           <h2 className="
             text-xl font-bold 
-            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            text-neutral-900-on-light dark:text-neutral-100-on-dark
           ">
             {isEditing ? 'Editar Transação' : 'Nova Transação'}
           </h2>
           <button
             onClick={onClose}
             className="
-              text-color-neutral-500-on-light dark:text-color-neutral-400-on-dark
-              hover:text-color-neutral-700-on-light dark:hover:text-color-neutral-200-on-dark
+              text-neutral-500-on-light dark:text-neutral-400-on-dark
+              hover:text-neutral-700-on-light dark:hover:text-neutral-200-on-dark
             "
           >
             <X className="w-5 h-5" />
@@ -125,7 +125,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <div>
             <label className="
               block text-sm font-family-sans mb-2
-              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+              text-neutral-700-on-light dark:text-neutral-300-on-dark
             ">
               Tipo de Transação
             </label>
@@ -145,7 +145,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <div>
             <label className="
               block text-sm font-family-sans mb-2
-              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+              text-neutral-700-on-light dark:text-neutral-300-on-dark
             ">
               Descrição
             </label>
@@ -164,14 +164,14 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <div>
             <label className="
               block text-sm font-family-sans mb-2
-              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+              text-neutral-700-on-light dark:text-neutral-300-on-dark
             ">
               Valor
             </label>
             <div className="relative">
               <span className="
                 absolute left-3 top-2 
-                text-color-neutral-500-on-light dark:text-color-neutral-600-on-dark
+                text-neutral-500-on-light dark:text-neutral-600-on-dark
               ">
                 R$
               </span>
@@ -192,7 +192,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <div>
             <label className="
               block text-sm font-family-sans mb-2
-              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+              text-neutral-700-on-light dark:text-neutral-300-on-dark
             ">
               Data
             </label>
@@ -210,7 +210,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <div>
             <label className="
               block text-sm font-family-sans mb-2
-              text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
+              text-neutral-700-on-light dark:text-neutral-300-on-dark
             ">
               Detalhes Adicionais (opcional)
             </label>
@@ -231,8 +231,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               className="
                 flex-1 px-4 py-2 rounded-lg font-family-sans font-medium transition-colors
                 border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-                text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark
-                hover:bg-color-neutral-50-on-light dark:hover:bg-color-neutral-900-on-dark
+                text-neutral-700-on-light dark:text-neutral-300-on-dark
+                hover:bg-primary-neutral-50-on-light dark:hover:bg-primary-neutral-900-on-dark
               "
             >
               Cancelar
@@ -240,7 +240,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-primary-600-on-light text-white rounded-lg hover:bg-primary-700-on-light font-medium"
+              className="flex-1 px-4 py-2 bg-primary-primary-600-on-light text-white rounded-lg hover:bg-primary-primary-700-on-light font-medium"
             >
               {isEditing ? 'Atualizar' : 'Criar'}
             </button>

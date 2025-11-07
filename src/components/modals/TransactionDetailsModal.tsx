@@ -26,24 +26,24 @@ export function TransactionDetailsModal({
   const getTypeClasses = (type: transactionType) => {
     switch (type) {
       case transactionTypes.Deposit:
-        return 'bg-color-semantic-success-100-on-light text-color-semantic-success-900-on-light dark:bg-color-semantic-success-900-on-dark dark:text-color-semantic-success-200-on-dark';
+        return 'bg-primary-semantic-success-100-on-light text-semantic-success-900-on-light dark:bg-primary-semantic-success-900-on-dark dark:text-semantic-success-200-on-dark';
       case transactionTypes.Withdrawal:
-        return 'bg-color-semantic-error-100-on-light text-color-semantic-error-900-on-light dark:bg-color-semantic-error-900-on-dark dark:text-color-semantic-error-200-on-dark';
+        return 'bg-primary-semantic-error-100-on-light text-semantic-error-900-on-light dark:bg-primary-semantic-error-900-on-dark dark:text-semantic-error-200-on-dark';
       case transactionTypes.Transfer:
       default:
-        return 'bg-color-primary-100-on-light text-color-primary-900-on-light dark:bg-color-primary-960-on-dark dark:text-color-primary-dark-300-on-dark';
+        return 'bg-primary-primary-100-on-light text-primary-1200-on-light dark:bg-primary-primary-960-on-dark dark:text-primary-dark-300-on-dark';
     }
   };
   
   const amountColorClass = transaction.amount >= 0
-    ? 'text-color-semantic-success-600-on-light dark:text-color-semantic-success-500-on-dark'
-    : 'text-color-semantic-error-600-on-light dark:text-color-semantic-error-500-on-dark';
+    ? 'text-semantic-success-600-on-light dark:text-semantic-success-500-on-dark'
+    : 'text-semantic-error-600-on-light dark:text-semantic-error-500-on-dark';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="
         rounded-lg shadow-xl max-w-md w-full mx-4
-        bg-white dark:bg-color-neutral-950-on-dark
+        bg-white dark:bg-primary-neutral-950-on-dark
       ">
 
         <div className="
@@ -52,15 +52,15 @@ export function TransactionDetailsModal({
         ">
           <h2 className="
             text-xl font-bold 
-            text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark
+            text-neutral-900-on-light dark:text-neutral-100-on-dark
           ">
             Detalhes da Transação
           </h2>
           <button
             onClick={onClose}
             className="
-              text-color-neutral-500-on-light dark:text-color-neutral-400-on-dark
-              hover:text-color-neutral-700-on-light dark:hover:text-color-neutral-200-on-dark
+              text-neutral-500-on-light dark:text-neutral-400-on-dark
+              hover:text-neutral-700-on-light dark:hover:text-neutral-200-on-dark
             "
           >
             <X className="w-5 h-5" />
@@ -72,7 +72,7 @@ export function TransactionDetailsModal({
           <div>
             <p className="
               text-sm mb-1 
-              text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark
+              text-neutral-600-on-light dark:text-neutral-400-on-dark
             ">
               Tipo
             </p>
@@ -106,13 +106,13 @@ export function TransactionDetailsModal({
               <div key={label}>
                 <p className="
                   text-sm mb-1 
-                  text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark
+                  text-neutral-600-on-light dark:text-neutral-400-on-dark
                 ">
                   {label}
                 </p>
                 {isText ? (
                   <p className="
-                    text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark font-family-sans
+                    text-neutral-900-on-light dark:text-neutral-100-on-dark font-family-sans
                   ">
                     {value}
                   </p>
@@ -125,7 +125,7 @@ export function TransactionDetailsModal({
           
           <button
             onClick={onClose}
-            className="w-full mt-6 px-4 py-2 bg-primary-600-on-light text-white rounded-lg hover:bg-primary-700-on-light"
+            className="w-full mt-6 px-4 py-2 bg-primary-primary-600-on-light text-white rounded-lg hover:bg-primary-primary-700-on-light"
           >
             Fechar
           </button>

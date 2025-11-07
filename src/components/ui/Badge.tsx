@@ -9,32 +9,32 @@ const badgeVariants = cva(
       variant: {
         success:
           'border-transparent ' + 
-          'bg-color-semantic-success-100-on-light dark:bg-color-semantic-success-900-on-dark ' +
-          'text-color-semantic-success-900-on-light dark:text-color-semantic-success-200-on-dark ' +
-          'hover:bg-color-semantic-success-200-on-light dark:hover:bg-color-semantic-success-800-on-dark',
+          'bg-primary-semantic-success-100-on-light dark:bg-primary-semantic-success-900-on-dark ' +
+          'text-semantic-success-900-on-light dark:text-semantic-success-200-on-dark ' +
+          'hover:bg-primary-semantic-success-200-on-light dark:hover:bg-primary-semantic-success-800-on-dark',
         
         warning:
           'border-transparent ' +
-          'bg-color-semantic-warning-100-on-light dark:bg-color-semantic-warning-900-on-dark ' +
-          'text-color-semantic-warning-900-on-light dark:text-color-semantic-warning-200-on-dark ' +
-          'hover:bg-color-semantic-warning-200-on-light dark:hover:bg-color-semantic-warning-800-on-dark',
+          'bg-primary-semantic-warning-100-on-light dark:bg-primary-semantic-warning-900-on-dark ' +
+          'text-semantic-warning-900-on-light dark:text-semantic-warning-200-on-dark ' +
+          'hover:bg-primary-semantic-warning-200-on-light dark:hover:bg-primary-semantic-warning-800-on-dark',
         
         default:
           'border-transparent ' +
-          'bg-color-primary-500-on-light dark:bg-color-primary-dark-600-on-dark ' +
-          'text-color-primary-900-on-light dark:text-color-primary-dark-400-on-dark ' +
-          'hover:bg-color-primary-600-on-light dark:hover:bg-color-primary-dark-500-on-dark',
+          'bg-primary-primary-500-on-light dark:bg-primary-primary-dark-600-on-dark ' +
+          'text-primary-1200-on-light dark:text-primary-dark-400-on-dark ' +
+          'hover:bg-primary-primary-600-on-light dark:hover:bg-primary-primary-dark-500-on-dark',
 
         soon:
           'border-transparent ' +
-          'bg-color-neutral-100-on-light dark:bg-color-neutral-900-on-dark ' +
-          'text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark ' +
-          'hover:bg-color-neutral-200-on-light dark:hover:bg-color-neutral-800-on-dark',
+          'bg-primary-neutral-100-on-light dark:bg-primary-neutral-900-on-dark ' +
+          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
+          'hover:bg-primary-neutral-200-on-light dark:hover:bg-primary-neutral-800-on-dark',
         
         outline: 
-          'text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark ' +
+          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
           'border-color-neutral-400-on-light dark:border-color-neutral-600-on-dark ' +
-          'bg-transparent dark:bg-color-neutral-950-on-dark',
+          'bg-transparent dark:bg-primary-neutral-950-on-dark',
       },
     },
     defaultVariants: {

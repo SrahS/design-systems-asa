@@ -82,8 +82,8 @@ export function DashboardView() {
               <Plus 
                 className="
                   w-6 h-6 
-                  text-color-primary-800-on-light 
-                  dark:text-color-primary-dark-700-on-dark
+                  text-primary-800-on-light 
+                  dark:text-primary-dark-700-on-dark
                 " 
               />
             }
@@ -96,8 +96,8 @@ export function DashboardView() {
               <List 
                 className="
                   w-6 h-6 
-                  text-color-primary-800-on-light 
-                  dark:text-color-primary-dark-700-on-dark
+                  text-primary-800-on-light 
+                  dark:text-primary-dark-700-on-dark
                 " 
               />
             }
@@ -111,18 +111,18 @@ export function DashboardView() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="
               text-xl font-bold 
-              text-color-neutral-900-on-light
-              dark:text-color-neutral-100-on-dark
+              text-neutral-900-on-light
+              dark:text-neutral-100-on-dark
             ">
               Atividade Recente
             </h2>
             <button 
               className="
                 text-sm font-medium transition-colors
-                text-color-primary-600-on-light 
-                hover:text-color-primary-700-on-light 
-                dark:text-color-primary-dark-400-on-dark 
-                dark:hover:text-color-primary-default-on-dark
+                text-primary-600-on-light 
+                hover:text-primary-700-on-light 
+                dark:text-primary-dark-400-on-dark 
+                dark:hover:text-primary-default-on-dark
               "
             >
               Ver Todas

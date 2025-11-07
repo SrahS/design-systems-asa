@@ -10,26 +10,26 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-color-primary-800-on-light dark:bg-color-primary-dark-600-on-dark ' +
-          'text-color-neutral-50-on-light dark:text-color-neutral-50-on-dark ' +
-          'hover:bg-color-primary-900-on-light dark:hover:bg-color-primary-dark-700-on-dark shadow-md',
+          'bg-primary-primary-800-on-light dark:bg-primary-primary-dark-600-on-dark ' +
+          'text-neutral-50-on-light dark:text-neutral-50-on-dark ' +
+          'hover:bg-primary-primary-900-on-light dark:hover:bg-primary-primary-dark-700-on-dark shadow-md',
 
         secondary:
-          'bg-color-neutral-200-on-light dark:bg-color-neutral-900-on-dark ' +
-          'text-color-neutral-900-on-light dark:text-color-neutral-100-on-dark ' +
-          'hover:bg-color-neutral-300-on-light dark:hover:bg-color-neutral-800-on-dark',
+          'bg-primary-neutral-200-on-light dark:bg-primary-neutral-900-on-dark ' +
+          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
+          'hover:bg-primary-neutral-300-on-light dark:hover:bg-primary-neutral-800-on-dark',
 
         ghost:
-          'hover:bg-color-neutral-100-on-light dark:hover:bg-color-neutral-900-on-dark ' +
-          'text-color-neutral-700-on-light dark:text-color-neutral-300-on-dark',
+          'hover:bg-primary-neutral-100-on-light dark:hover:bg-primary-neutral-900-on-dark ' +
+          'text-neutral-700-on-light dark:text-neutral-300-on-dark',
 
         link: 
-          'text-color-primary-700-on-light dark:text-color-primary-dark-400-on-dark underline-offset-4 hover:underline',
+          'text-primary-700-on-light dark:text-primary-dark-400-on-dark underline-offset-4 hover:underline',
         
         destructive:
-          'bg-color-semantic-error-700-on-light dark:bg-color-semantic-error-600-on-dark ' +
-          'text-color-neutral-50-on-light dark:text-color-neutral-50-on-dark ' +
-          'hover:bg-color-semantic-error-800-on-light dark:hover:bg-color-semantic-error-700-on-dark shadow-md',
+          'bg-primary-semantic-error-700-on-light dark:bg-primary-semantic-error-600-on-dark ' +
+          'text-neutral-50-on-light dark:text-neutral-50-on-dark ' +
+          'hover:bg-primary-semantic-error-800-on-light dark:hover:bg-primary-semantic-error-700-on-dark shadow-md',
       },
       size: {
         default: 'h-10 px-4 py-2 text-body-md',

@@ -19,8 +19,8 @@ export function TransactionList({
   return (
     <div className="space-y-3">
       {transactions.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
-          <p className="text-gray-600">Nenhuma transação encontrada</p>
+        <div className="text-center py-8 bg-primary-100-on-light rounded-lg">
+          <p className="text-primary-1200-on-light">Nenhuma transação encontrada</p>
         </div>
       ) : (
         transactions.map((transaction) => (

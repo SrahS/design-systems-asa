@@ -7,7 +7,7 @@ interface BalanceCardProps {
 
 export function BalanceCard({ account }: BalanceCardProps) {
   return (
-    <Card className="bg-primary-300-on-light rounded-lg shadow-md text-[#D2691E]">     
+    <Card className="bg-primary-400-on-light rounded-lg shadow-md text-primary-900-on-light">     
       <div className="mb-4">
         <p className="text-sm font-family-sans opacity-90">Saldo disponível</p>
         <h2 className="text-5xl font-bold mt-2">

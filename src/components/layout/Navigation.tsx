@@ -17,10 +17,10 @@ const navItems: NavItem[] = [
 
 export function Navigation() {
   const { activeTab, setActiveTab } = useTab();
-  const textNormalClass = 'text-color-neutral-600-on-light dark:text-color-neutral-400-on-dark';
-  const textHoverClass = 'hover:text-color-neutral-900-on-light dark:hover:text-color-neutral-100-on-dark';
+  const textNormalClass = 'text-neutral-600-on-light dark:text-neutral-400-on-dark';
+  const textHoverClass = 'hover:text-neutral-900-on-light dark:hover:text-neutral-100-on-dark';
 
-  const textActiveClass = 'text-color-primary-900-on-light dark:text-color-primary-dark-300-on-dark';
+  const textActiveClass = 'text-primary-1200-on-light dark:text-primary-dark-300-on-dark';
   const borderActiveClass = 'border-color-primary-900-on-light dark:border-color-primary-dark-300-on-dark';
 
   return (
