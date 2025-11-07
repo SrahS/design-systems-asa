@@ -35,7 +35,7 @@ export function ActionCard({ icon, title, description, onClick }: ActionCardProp
           </h3>
           <p className="
             text-sm mt-1
-            text-primary-600-on-light
+            text-primary-800-on-light
           ">
             {description}
           </p>

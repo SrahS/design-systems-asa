@@ -114,7 +114,7 @@ export function TransactionDetailsModal({
           
           <button
             onClick={onClose}
-            className="w-full mt-6 px-4 py-2 bg-primary-600-on-light text-white rounded-lg hover:bg-primary-700-on-light"
+            className="w-full mt-6 px-4 py-2 bg-primary-900-on-light text-white rounded-lg hover:bg-primary-800-on-light"
           >
             Fechar
           </button>

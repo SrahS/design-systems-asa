@@ -10,9 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-primary-800-on-light ' +
-          'text-neutral-50-on-light ' +
-          'bg-primary-900-on-light hover:bg-primary-800-on-light shadow-md',
+          'text-neutral-900-on-light ' +
+          'bg-primary-300-on-light hover:bg-primary-500-on-light shadow-md',
 
         secondary:
           'bg-neutral-200-on-light' +
