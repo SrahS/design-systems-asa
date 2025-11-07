@@ -82,11 +82,10 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
   const inputClassNames = `
     w-full border rounded-lg px-3 py-2
-    border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-    bg-white dark:bg-primary-neutral-950-on-dark
-    text-neutral-900-on-light dark:text-neutral-100-on-dark
-    focus:ring-2 focus:ring-color-primary-500-on-light dark:focus:ring-color-primary-dark-500-on-dark focus:border-transparent
-    placeholder:text-neutral-500-on-light dark:placeholder:text-neutral-600-on-dark
+    border-neutral-300-on-light
+    bg-white
+    text-neutral-900-on-light
+    placeholder:text-neutral-500-on-light
   `;
 
   return (
@@ -96,37 +95,20 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         bg-white dark:bg-primary-neutral-950-on-dark
       ">
         
-        {/* Header */}
-        <div className="
-          flex items-center justify-between border-b p-6
-          border-color-neutral-200-on-light dark:border-color-neutral-900-on-dark
-        ">
-          <h2 className="
-            text-xl font-bold 
-            text-neutral-900-on-light dark:text-neutral-100-on-dark
-          ">
+        <div className="flex items-center justify-between p-6">
+          <h2 className="text-xl font-bold">
             {isEditing ? 'Editar Transação' : 'Nova Transação'}
           </h2>
           <button
             onClick={onClose}
-            className="
-              text-neutral-500-on-light dark:text-neutral-400-on-dark
-              hover:text-neutral-700-on-light dark:hover:text-neutral-200-on-dark
-            "
-          >
+            className="text-neutral-900-on-light hover:text-neutral-700-on-light">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Formulário */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          
-          {/* Campo: Tipo de Transação */}
           <div>
-            <label className="
-              block text-sm font-family-sans mb-2
-              text-neutral-700-on-light dark:text-neutral-300-on-dark
-            ">
+            <label className="block text-sm font-family-sans mb-2">
               Tipo de Transação
             </label>
             <select
@@ -141,12 +123,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             </select>
           </div>
 
-          {/* Campo: Descrição */}
           <div>
-            <label className="
-              block text-sm font-family-sans mb-2
-              text-neutral-700-on-light dark:text-neutral-300-on-dark
-            ">
+            <label className="block text-sm font-family-sans mb-2">
               Descrição
             </label>
             <input
@@ -160,12 +138,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             />
           </div>
 
-          {/* Campo: Valor */}
           <div>
-            <label className="
-              block text-sm font-family-sans mb-2
-              text-neutral-700-on-light dark:text-neutral-300-on-dark
-            ">
+            <label className="block text-sm font-family-sans mb-2">
               Valor
             </label>
             <div className="relative">
@@ -188,12 +162,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             </div>
           </div>
 
-          {/* Campo: Data */}
           <div>
-            <label className="
-              block text-sm font-family-sans mb-2
-              text-neutral-700-on-light dark:text-neutral-300-on-dark
-            ">
+            <label className="block text-sm font-family-sans mb-2">
               Data
             </label>
             <input
@@ -206,12 +176,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             />
           </div>
 
-          {/* Campo: Detalhes Adicionais (opcional) */}
           <div>
-            <label className="
-              block text-sm font-family-sans mb-2
-              text-neutral-700-on-light dark:text-neutral-300-on-dark
-            ">
+            <label className="block text-sm font-family-sans mb-2">
               Detalhes Adicionais (opcional)
             </label>
             <textarea
@@ -230,9 +196,9 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               onClick={onClose}
               className="
                 flex-1 px-4 py-2 rounded-lg font-family-sans font-medium transition-colors
-                border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark
-                text-neutral-700-on-light dark:text-neutral-300-on-dark
-                hover:bg-primary-neutral-50-on-light dark:hover:bg-primary-neutral-900-on-dark
+                border border-neutral-300-on-light
+                text-neutral-700-on-light
+                hover:bg-neutral-200-on-light
               "
             >
               Cancelar
@@ -240,7 +206,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-primary-primary-600-on-light text-white rounded-lg hover:bg-primary-primary-700-on-light font-medium"
+              className="flex-1 px-4 py-2 bg-primary-900-on-light text-white rounded-lg hover:bg-primary-800-on-light font-medium"
             >
               {isEditing ? 'Atualizar' : 'Criar'}
             </button>

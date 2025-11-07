@@ -16,9 +16,8 @@ const cardVariants = cva(
           'shadow-level-3 hover:shadow-level-4 transition-shadow border border-transparent',
 
         outline:
-          'bg-primary-neutral-50-on-light dark:bg-primary-neutral-950-on-dark ' +
-          'border border-color-neutral-300-on-light dark:border-color-neutral-700-on-dark ' +
-          'shadow-level-0 hover:border-color-neutral-400-on-light dark:hover:border-color-neutral-600-on-dark',
+          'bg-neutral-100-on-light dark:bg-primary-neutral-950-on-dark ' +
+          'shadow-level-0 hover:bg-neutral-200-on-light',
         
         primary: 
           'bg-primary-primary-50-on-light dark:bg-primary-primary-950-on-dark ' +
