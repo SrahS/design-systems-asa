@@ -12,7 +12,7 @@ const buttonVariants = cva(
         primary:
           'bg-primary-primary-800-on-light dark:bg-primary-primary-dark-600-on-dark ' +
           'text-neutral-50-on-light dark:text-neutral-50-on-dark ' +
-          'hover:bg-primary-primary-900-on-light dark:hover:bg-primary-primary-dark-700-on-dark shadow-md',
+          'bg-primary-900-on-light hover:bg-primary-800-on-light shadow-md',
 
         secondary:
           'bg-primary-neutral-200-on-light dark:bg-primary-neutral-900-on-dark ' +

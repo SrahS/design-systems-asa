@@ -26,15 +26,14 @@ const badgeVariants = cva(
           'hover:bg-primary-primary-600-on-light dark:hover:bg-primary-primary-dark-500-on-dark',
 
         soon:
-          'border-transparent ' +
-          'bg-primary-neutral-100-on-light dark:bg-primary-neutral-900-on-dark ' +
+          'bg-neutral-100-on-light dark:bg-neutral-900-on-dark ' +
           'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
-          'hover:bg-primary-neutral-200-on-light dark:hover:bg-primary-neutral-800-on-dark',
+          'bg-transparent dark:bg-neutral-700-on-dark',
         
         outline: 
           'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
           'border-color-neutral-400-on-light dark:border-color-neutral-600-on-dark ' +
-          'bg-transparent dark:bg-primary-neutral-950-on-dark',
+          'bg-transparent dark:bg-neutral-700-on-dark',
       },
     },
     defaultVariants: {

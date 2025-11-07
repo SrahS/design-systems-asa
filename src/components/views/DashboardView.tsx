@@ -83,7 +83,7 @@ export function DashboardView() {
                 className="
                   w-6 h-6 
                   text-primary-800-on-light 
-                  dark:text-primary-dark-700-on-dark
+                  dark:text-primary-700-on-dark
                 " 
               />
             }
@@ -111,18 +111,15 @@ export function DashboardView() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="
               text-xl font-bold 
-              text-neutral-900-on-light
-              dark:text-neutral-100-on-dark
+              text-neutral-1000-on-light
             ">
               Atividade Recente
             </h2>
             <button 
               className="
                 text-sm font-medium transition-colors
-                text-primary-600-on-light 
-                hover:text-primary-700-on-light 
-                dark:text-primary-dark-400-on-dark 
-                dark:hover:text-primary-default-on-dark
+                text-primary-900-on-light 
+                hover:text-primary-800-on-light 
               "
             >
               Ver Todas

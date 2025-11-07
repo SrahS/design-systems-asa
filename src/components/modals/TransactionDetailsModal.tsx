@@ -26,12 +26,13 @@ export function TransactionDetailsModal({
   const getTypeClasses = (type: transactionType) => {
     switch (type) {
       case transactionTypes.Deposit:
-        return 'bg-primary-semantic-success-100-on-light text-semantic-success-900-on-light dark:bg-primary-semantic-success-900-on-dark dark:text-semantic-success-200-on-dark';
+        return 'bg-semantic-success-100-on-light text-semantic-success-900-on-light';
       case transactionTypes.Withdrawal:
-        return 'bg-primary-semantic-error-100-on-light text-semantic-error-900-on-light dark:bg-primary-semantic-error-900-on-dark dark:text-semantic-error-200-on-dark';
+        return 'bg-semantic-error-100-on-light text-semantic-error-900-on-light';
       case transactionTypes.Transfer:
+        return 'bg-semantic-error-100-on-light text-semantic-error-900-on-light';
       default:
-        return 'bg-primary-primary-100-on-light text-primary-1200-on-light dark:bg-primary-primary-960-on-dark dark:text-primary-dark-300-on-dark';
+        return 'bg-primary-100-on-light text-primary-1200-on-light';
     }
   };
   
@@ -41,27 +42,18 @@ export function TransactionDetailsModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="
-        rounded-lg shadow-xl max-w-md w-full mx-4
-        bg-white dark:bg-primary-neutral-950-on-dark
-      ">
+      <div className="rounded-lg shadow-xl max-w-md w-full mx-4 bg-white">
 
-        <div className="
-          flex items-center justify-between border-b p-6
-          border-color-neutral-200-on-light dark:border-color-neutral-900-on-dark
-        ">
+        <div className="flex items-center justify-between p-6">
           <h2 className="
             text-xl font-bold 
-            text-neutral-900-on-light dark:text-neutral-100-on-dark
+            text-neutral-1200-on-light
           ">
             Detalhes da Transação
           </h2>
           <button
             onClick={onClose}
-            className="
-              text-neutral-500-on-light dark:text-neutral-400-on-dark
-              hover:text-neutral-700-on-light dark:hover:text-neutral-200-on-dark
-            "
+            className="text-neutral-500-on-light hover:text-neutral-700-on-light"
           >
             <X className="w-5 h-5" />
           </button>
@@ -70,10 +62,7 @@ export function TransactionDetailsModal({
         <div className="p-6 space-y-4">
           
           <div>
-            <p className="
-              text-sm mb-1 
-              text-neutral-600-on-light dark:text-neutral-400-on-dark
-            ">
+            <p className="text-sm mb-1 text-neutral-900-on-light">
               Tipo
             </p>
             <span
@@ -89,10 +78,10 @@ export function TransactionDetailsModal({
           {Object.entries({
             'Descrição': transaction.name,
             'Valor': (
-                <p className={cn("text-2xl font-bold", amountColorClass)}>
-                    {transaction.amount >= 0 ? '+' : ''}R$
-                    {Math.abs(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </p>
+              <p className={cn("text-2xl font-bold", amountColorClass)}>
+                  {transaction.amount >= 0 ? '+' : ''}R$
+                  {Math.abs(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
             ),
             'Data': formattedDate,
             'Referência': <p className="font-mono text-sm">{transaction.reference}</p>,
@@ -106,13 +95,13 @@ export function TransactionDetailsModal({
               <div key={label}>
                 <p className="
                   text-sm mb-1 
-                  text-neutral-600-on-light dark:text-neutral-400-on-dark
+                  text-neutral-900-on-light
                 ">
                   {label}
                 </p>
                 {isText ? (
                   <p className="
-                    text-neutral-900-on-light dark:text-neutral-100-on-dark font-family-sans
+                    text-neutral-1000-on-light font-family-sans
                   ">
                     {value}
                   </p>
