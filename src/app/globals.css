@@ -13,29 +13,33 @@
 
 @theme {
   /* Cores Primárias (Light) */
-  --color-primary-50-on-light: #FDFCFE;
-  --color-primary-100-on-light: #F9F4F6;
-  --color-primary-200-on-light: #F3EFE9;
-  --color-primary-300-on-light: #F0E5CC;
-  --color-primary-400-on-light: #F2ECC2;
-  --color-primary-500-on-light: #F0E0AF;
-  --color-primary-600-on-light: #E4B79D;
-  --color-primary-700-on-light: #E39886;
-  --color-primary-800-on-light: #EB623D;
-  --color-primary-900-on-light: #E3381B;
+  --color-primary-100-on-light: #FDFDFE;
+  --color-primary-200-on-light: #F7FAFF;
+  --color-primary-300-on-light: #ECF2FE;
+  --color-primary-400-on-light: #DEEAFF;
+  --color-primary-500-on-light: #CDE0FF;
+  --color-primary-600-on-light: #BAD3FF;
+  --color-primary-700-on-light: #A3C0F8;
+  --color-primary-800-on-light: #82A7EE;
+  --color-primary-900-on-light: #0239AD;
+  --color-primary-1000-on-light: #002499;
+  --color-primary-1100-on-light: #2D5FC5;
+  --color-primary-1200-on-light: #192F5B;
+
 
   /* Cores Primárias (Dark) */
-  --color-primary-950-on-dark: #322F26;
-  --color-primary-960-on-dark: #3F2D2E;
-  --color-primary-970-on-dark: #4F2E30;
-  --color-primary-980-on-dark: #602B30;
-  --color-primary-990-on-dark: #752A2D;
-  --color-primary-dark-800-on-dark: #A43A2F;
-  --color-primary-dark-700-on-dark: #B94D2C;
-  --color-primary-dark-600-on-dark: #C65D2C;
-  --color-primary-dark-500-on-dark: #D4682A;
-  --color-primary-dark-400-on-dark: #E76B26;
-  --color-primary-default-on-dark: #F7680A;
+  --color-primary-100-on-dark:#0F1A2E;
+  --color-primary-200-on-dark: #0F1C35;
+  --color-primary-300-on-dark: #062464;
+  --color-primary-400-on-dark: #002786;
+  --color-primary-500-on-dark: #00309C;
+  --color-primary-600-on-dark: #043BAF;
+  --color-primary-700-on-dark: #0A47C8;
+  --color-primary-800-on-dark: #0953EB;
+  --color-primary-900-on-dark: #225BFF;
+  --color-primary-1000-on-dark: #0E57EF;
+  --color-primary-1100-on-dark: #89AFFF;
+  --color-primary-1200-on-dark: #CFE2FF;
 
   /* Cores Neutras (Light) */
   --color-neutral-50-on-light: #FDFCFD;
