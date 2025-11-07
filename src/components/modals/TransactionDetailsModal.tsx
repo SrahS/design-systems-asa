@@ -37,8 +37,8 @@ export function TransactionDetailsModal({
   };
   
   const amountColorClass = transaction.amount >= 0
-    ? 'text-semantic-success-600-on-light dark:text-semantic-success-500-on-dark'
-    : 'text-semantic-error-600-on-light dark:text-semantic-error-500-on-dark';
+    ? 'text-semantic-success-600-on-light'
+    : 'text-semantic-error-600-on-light';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -114,7 +114,7 @@ export function TransactionDetailsModal({
           
           <button
             onClick={onClose}
-            className="w-full mt-6 px-4 py-2 bg-primary-primary-600-on-light text-white rounded-lg hover:bg-primary-primary-700-on-light"
+            className="w-full mt-6 px-4 py-2 bg-primary-600-on-light text-white rounded-lg hover:bg-primary-700-on-light"
           >
             Fechar
           </button>

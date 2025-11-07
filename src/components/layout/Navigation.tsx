@@ -26,7 +26,7 @@ export function Navigation() {
   return (
     <nav className="
       flex gap-6 
-      border-color-neutral-200-on-light dark:border-color-neutral-800-on-dark
+      border-color-neutral-200-on-light
     ">
       {navItems.map((item) => {
         const isActive = activeTab === item.label;

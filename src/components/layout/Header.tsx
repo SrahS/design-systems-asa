@@ -3,6 +3,8 @@
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Navigation } from './Navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
   accountName: string;
@@ -18,11 +20,12 @@ export function Header({ accountName, accountNumber, status }: HeaderProps) {
           <div className="flex items-center gap-3">
             <div className="
               w-8 h-8 rounded flex items-center justify-center
-              bg-color-primary-800-on-light dark:bg-color-primary-dark-600-on-dark
+              bg-color-primary-800-on-light
             ">
-              <span className=" font-bold text-sm text-primary-1200-on-light">
-                R$
-              </span>
+            <FontAwesomeIcon
+              icon={faUser}
+              className="font-bold text-sm text-primary-1200-on-light"
+            />
             </div>
             <div>
               <h1 className="text-xl font-bold text-primary-1200-on-light ">

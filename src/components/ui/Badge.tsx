@@ -9,31 +9,31 @@ const badgeVariants = cva(
       variant: {
         success:
           'border-transparent ' + 
-          'bg-primary-semantic-success-100-on-light dark:bg-primary-semantic-success-900-on-dark ' +
-          'text-semantic-success-900-on-light dark:text-semantic-success-200-on-dark ' +
-          'hover:bg-primary-semantic-success-200-on-light dark:hover:bg-primary-semantic-success-800-on-dark',
+          'bg-semantic-success-100-on-light' +
+          'text-semantic-success-900-on-light' +
+          'hover:bg-semantic-success-200-on-light',
         
         warning:
           'border-transparent ' +
-          'bg-primary-semantic-warning-100-on-light dark:bg-primary-semantic-warning-900-on-dark ' +
-          'text-semantic-warning-900-on-light dark:text-semantic-warning-200-on-dark ' +
-          'hover:bg-primary-semantic-warning-200-on-light dark:hover:bg-primary-semantic-warning-800-on-dark',
+          'bg-semantic-warning-100-on-light ' +
+          'text-semantic-warning-900-on-light ' +
+          'hover:bg-semantic-warning-200-on-light',
         
         default:
           'border-transparent ' +
-          'bg-primary-primary-500-on-light dark:bg-primary-primary-dark-600-on-dark ' +
-          'text-primary-1200-on-light dark:text-primary-dark-400-on-dark ' +
-          'hover:bg-primary-primary-600-on-light dark:hover:bg-primary-primary-dark-500-on-dark',
+          'bg-primary-500-on-light ' +
+          'text-primary-1200-on-light ' +
+          'hover:bg-primary-600-on-light',
 
         soon:
-          'bg-neutral-100-on-light dark:bg-neutral-900-on-dark ' +
-          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
-          'bg-transparent dark:bg-neutral-700-on-dark',
+          'bg-neutral-100-on-light' +
+          'text-neutral-900-on-light' +
+          'bg-transparent',
         
         outline: 
-          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
-          'border-color-neutral-400-on-light dark:border-color-neutral-600-on-dark ' +
-          'bg-transparent dark:bg-neutral-700-on-dark',
+          'text-neutral-900-on-light  ' +
+          'border-color-neutral-400-on-light' +
+          'bg-transparent',
       },
     },
     defaultVariants: {

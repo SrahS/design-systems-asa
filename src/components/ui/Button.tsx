@@ -5,31 +5,31 @@ import { ChevronRight, Loader2 } from 'lucide-react';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-md font-family-sans transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none' +
-  ' focus-visible:ring-color-primary-500-on-light dark:focus-visible:ring-color-primary-dark-500-on-dark',
+  ' focus-visible:ring-color-primary-500-on-light ',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary-primary-800-on-light dark:bg-primary-primary-dark-600-on-dark ' +
-          'text-neutral-50-on-light dark:text-neutral-50-on-dark ' +
+          'bg-primary-800-on-light ' +
+          'text-neutral-50-on-light ' +
           'bg-primary-900-on-light hover:bg-primary-800-on-light shadow-md',
 
         secondary:
-          'bg-primary-neutral-200-on-light dark:bg-primary-neutral-900-on-dark ' +
-          'text-neutral-900-on-light dark:text-neutral-100-on-dark ' +
-          'hover:bg-primary-neutral-300-on-light dark:hover:bg-primary-neutral-800-on-dark',
+          'bg-neutral-200-on-light' +
+          'text-neutral-900-on-light' +
+          'hover:bg-neutral-300-on-light',
 
         ghost:
-          'hover:bg-primary-neutral-100-on-light dark:hover:bg-primary-neutral-900-on-dark ' +
-          'text-neutral-700-on-light dark:text-neutral-300-on-dark',
+          'hover:bg-neutral-100-on-light' +
+          'text-neutral-700-on-light',
 
         link: 
-          'text-primary-700-on-light dark:text-primary-dark-400-on-dark underline-offset-4 hover:underline',
+          'text-primary-700-on-light',
         
         destructive:
-          'bg-primary-semantic-error-700-on-light dark:bg-primary-semantic-error-600-on-dark ' +
-          'text-neutral-50-on-light dark:text-neutral-50-on-dark ' +
-          'hover:bg-primary-semantic-error-800-on-light dark:hover:bg-primary-semantic-error-700-on-dark shadow-md',
+          'bg-semantic-error-700-on-light' +
+          'text-neutral-50-on-light' +
+          'hover:bg-semantic-error-800-on-light',
       },
       size: {
         default: 'h-10 px-4 py-2 text-body-md',

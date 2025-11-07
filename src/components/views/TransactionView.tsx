@@ -54,7 +54,6 @@ export function TransactionsView() {
               <Search className="
                 w-4 h-4 
                 text-neutral-700-on-light 
-                dark:text-neutral-300-on-dark
               " />
               Pesquisar
             </button>
@@ -68,7 +67,6 @@ export function TransactionsView() {
               <Filter className="
                 w-4 h-4 
                 text-neutral-700-on-light 
-                dark:text-neutral-300-on-dark
               " />
               Filtrar
             </button>

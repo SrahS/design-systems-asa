@@ -83,7 +83,6 @@ export function DashboardView() {
                 className="
                   w-6 h-6 
                   text-primary-800-on-light 
-                  dark:text-primary-700-on-dark
                 " 
               />
             }
@@ -97,7 +96,6 @@ export function DashboardView() {
                 className="
                   w-6 h-6 
                   text-primary-800-on-light 
-                  dark:text-primary-dark-700-on-dark
                 " 
               />
             }
