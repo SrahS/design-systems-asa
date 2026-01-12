@@ -6,6 +6,7 @@ import { useTransactions } from '@/contexts/TransactionContext';
 import { useState } from 'react';
 import { TransactionModal } from '@/components/modals/TransactionModal';
 import { TransactionDetailsModal } from '@/components/modals/TransactionDetailsModal';
+import { TransactionTypeCharts } from '@/components/dashboard/TransactionTypeCharts';
 import { Transaction } from '@/types';
 
 export function TransactionsView() {

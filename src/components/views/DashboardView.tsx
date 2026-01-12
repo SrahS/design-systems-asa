@@ -10,6 +10,7 @@ import { useTab } from '@/contexts/TabContext';
 import { useState } from 'react';
 import { TransactionModal } from '@/components/modals/TransactionModal';
 import { TransactionDetailsModal } from '@/components/modals/TransactionDetailsModal';
+import { TransactionTypeCharts } from '@/components/dashboard/TransactionTypeCharts';
 import { Transaction } from '@/types';
 import { mockAccount } from '@/data/mockData';
 
@@ -68,6 +69,7 @@ export function DashboardView() {
     <>
       <div className="space-y-6">
 
+        <TransactionTypeCharts transactions={transactions} />
         <BalanceCard account={dynamicAccount} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
