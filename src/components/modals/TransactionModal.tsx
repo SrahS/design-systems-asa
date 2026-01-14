@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { Transaction, transactionType, transactionTypes } from '@/types';
-import { useTransactions } from '@/contexts/TransactionContext';
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { Transaction, transactionType, transactionTypes } from "@/types";
+import { useTransactions } from "@/contexts/TransactionContext";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -13,12 +13,13 @@ interface TransactionModalProps {
 
 export function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { addTransaction, updateTransaction } = useTransactions();
+
   const [formData, setFormData] = useState({
-    name: '',
-    amount: '',
-    type: 'Depósito' as transactionType,
-    description: '',
-    date: new Date().toISOString().split('T')[0],
+    name: "",
+    amount: "",
+    type: transactionTypes.Deposit as transactionType,
+    description: "",
+    date: new Date().toISOString().split("T")[0],
   });
 
   useEffect(() => {
@@ -27,21 +28,23 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         name: transaction.name,
         amount: Math.abs(transaction.amount).toString(),
         type: transaction.type,
-        description: transaction.description || '',
+        description: transaction.description || "",
         date: transaction.date,
       });
     } else {
       setFormData({
-        name: '',
-        amount: '',
+        name: "",
+        amount: "",
         type: transactionTypes.Deposit,
-        description: '',
-        date: new Date().toISOString().split('T')[0],
+        description: "",
+        date: new Date().toISOString().split("T")[0],
       });
     }
   }, [transaction, isOpen]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -69,7 +72,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         type: formData.type,
         description: formData.description,
         date: formData.date,
-        reference: 'Ref',
+        reference: "Ref",
       });
     }
 
@@ -77,40 +80,70 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   };
 
   if (!isOpen) return null;
-
   const isEditing = !!transaction;
 
+  const labelClass =
+    "block text-xs font-medium text-neutral-700-on-light mb-1.5";
+
   const inputClassNames = `
-    w-full border rounded-lg px-3 py-2
-    border-neutral-300-on-light
-    bg-white
-    text-neutral-900-on-light
-    placeholder:text-neutral-500-on-light
+    w-full rounded-lg px-3 py-2 text-sm
+    border border-neutral-200-on-light bg-white
+    text-neutral-900-on-light placeholder:text-neutral-500-on-light
+    outline-none
+    focus:ring-2 focus:ring-primary-200-on-light focus:border-primary-400-on-light
+    transition-colors
   `;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="
-        rounded-lg shadow-xl max-w-md w-full mx-4
-        bg-white
-      ">
-        
-        <div className="flex items-center justify-between p-6">
-          <h2 className="text-xl font-bold">
-            {isEditing ? 'Editar Transação' : 'Nova Transação'}
-          </h2>
+    <div
+      className="
+        fixed inset-0 z-50 p-4
+        flex items-center justify-center
+        bg-black/50 backdrop-blur-sm
+      "
+      role="dialog"
+      aria-modal="true"
+      aria-label={isEditing ? "Editar transação" : "Nova transação"}
+      onClick={onClose}
+    >
+      <div
+        className="
+          w-full max-w-md
+          rounded-2xl bg-white
+          border border-neutral-200/70
+          shadow-[0_18px_55px_rgba(15,23,42,0.18)]
+        "
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-200/70">
+          <div className="min-w-0">
+            <h2 className="text-lg font-bold text-neutral-1200-on-light">
+              {isEditing ? "Editar Transação" : "Nova Transação"}
+            </h2>
+            <p className="mt-1 text-xs text-neutral-600-on-light">
+              Preencha os campos abaixo para {isEditing ? "atualizar" : "criar"}.
+            </p>
+          </div>
+
           <button
             onClick={onClose}
-            className="text-neutral-900-on-light hover:text-neutral-700-on-light">
+            className="
+              inline-flex items-center justify-center
+              h-9 w-9 rounded-lg
+              text-neutral-600-on-light
+              hover:bg-neutral-200-on-light hover:text-neutral-900-on-light
+              transition-colors
+            "
+            aria-label="Fechar"
+            type="button"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-family-sans mb-2">
-              Tipo de Transação
-            </label>
+            <label className={labelClass}>Tipo de Transação</label>
             <select
               name="type"
               value={formData.type}
@@ -124,9 +157,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </div>
 
           <div>
-            <label className="block text-sm font-family-sans mb-2">
-              Descrição
-            </label>
+            <label className={labelClass}>Descrição</label>
             <input
               type="text"
               name="name"
@@ -139,22 +170,23 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </div>
 
           <div>
-            <label className="block text-sm font-family-sans mb-2">
-              Valor
-            </label>
+            <label className={labelClass}>Valor</label>
             <div className="relative">
-              <span className="
-                absolute left-3 top-2 
-                text-neutral-500-on-light
-              ">
+              <span
+                className="
+                  absolute left-3 top-1/2 -translate-y-1/2
+                  text-sm text-neutral-500-on-light
+                "
+              >
                 R$
               </span>
               <input
                 type="number"
+                inputMode="decimal"
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
-                placeholder="0.00"
+                placeholder="0,00"
                 step="0.01"
                 className={`${inputClassNames} pl-9`}
                 required
@@ -163,9 +195,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </div>
 
           <div>
-            <label className="block text-sm font-family-sans mb-2">
-              Data
-            </label>
+            <label className={labelClass}>Data</label>
             <input
               type="date"
               name="date"
@@ -177,38 +207,42 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </div>
 
           <div>
-            <label className="block text-sm font-family-sans mb-2">
-              Detalhes Adicionais (opcional)
-            </label>
+            <label className={labelClass}>Detalhes Adicionais (opcional)</label>
             <textarea
               name="description"
               value={formData.description}
-              onChange={handleChange as any}
+              onChange={handleChange}
               placeholder="Adicione quaisquer notas adicionais..."
               rows={3}
-              className={inputClassNames}
+              className={`${inputClassNames} resize-none`}
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
               className="
-                flex-1 px-4 py-2 rounded-lg font-family-sans font-medium transition-colors
-                border border-neutral-300-on-light
-                text-neutral-700-on-light
+                flex-1 px-4 py-2.5 rounded-lg text-sm font-medium
+                border border-neutral-200-on-light
+                text-neutral-800-on-light
                 hover:bg-neutral-200-on-light
+                transition-colors
               "
             >
               Cancelar
             </button>
-            
+
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-primary-900-on-light text-white rounded-lg hover:bg-primary-800-on-light font-medium"
+              className="
+                flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold
+                bg-primary-900-on-light text-white
+                hover:bg-primary-800-on-light
+                transition-colors
+              "
             >
-              {isEditing ? 'Atualizar' : 'Criar'}
+              {isEditing ? "Atualizar" : "Criar"}
             </button>
           </div>
         </form>
