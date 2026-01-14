@@ -21,7 +21,8 @@ const COLORS = ['#2D5FC5', '#F7965B', '#36CEC3'];
 
 type Props = { transactions: Transaction[] };
 
-function CustomTooltip({ active, payload, label }: TooltipProps<any, any>) {
+
+function CurrencyTooltip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
 
   return (
@@ -41,6 +42,34 @@ function CustomTooltip({ active, payload, label }: TooltipProps<any, any>) {
             <span className="text-xs text-neutral-500">{p.name}</span>
             <span className="text-xs font-semibold text-neutral-900">
               {formatCurrency(p.value)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CountTooltip({ active, payload, label }: TooltipProps<number, string>) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div
+      className="
+        rounded-xl border border-neutral-200/80 bg-white px-3 py-2
+        shadow-[0_10px_25px_rgba(15,23,42,0.10)]
+      "
+    >
+      {label ? (
+        <p className="text-xs font-medium text-neutral-700">{label}</p>
+      ) : null}
+
+      <div className="mt-1 space-y-1">
+        {payload.map((p, i) => (
+          <div key={i} className="flex items-center justify-between gap-4">
+            <span className="text-xs text-neutral-500">{p.name}</span>
+            <span className="text-xs font-semibold text-neutral-900">
+              {p.value}
             </span>
           </div>
         ))}
@@ -86,7 +115,7 @@ export function TransactionTypeCharts({ transactions }: Props) {
                   ))}
                 </Pie>
 
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CurrencyTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -124,7 +153,7 @@ export function TransactionTypeCharts({ transactions }: Props) {
                   axisLine={false}
                   className="text-xs"
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CountTooltip />} />
 
                 <Bar
                   dataKey="count"
