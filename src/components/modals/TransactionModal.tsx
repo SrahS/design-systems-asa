@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { Transaction, transactionType, transactionTypes } from "@/types";
 import { useTransactions } from "@/contexts/TransactionContext";
+import { cn } from "@/lib/utils";
 
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
   transaction?: Transaction | null;
 }
+
+type FormErrors = Partial<Record<"type" | "name" | "amount" | "date", string>>;
+
+const incomeSuggestions = ["Salário", "Freelance", "Reembolso", "Dividendos", "Rendimento", "Cashback", "Outros"];
+const expenseSuggestions = ["Alimentação", "Supermercado", "Transporte", "Moradia", "Saúde", "Lazer", "Educação", "Assinaturas", "Outros"];
 
 export function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { addTransaction, updateTransaction } = useTransactions();
@@ -21,6 +27,20 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     description: "",
     date: new Date().toISOString().split("T")[0],
   });
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof typeof formData, boolean>>>({});
+
+  const isIncome = formData.type === transactionTypes.Deposit;
+
+  const descriptionSuggestions = useMemo(
+    () => (isIncome ? incomeSuggestions : expenseSuggestions),
+    [isIncome]
+  );
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
   useEffect(() => {
     if (transaction) {
@@ -40,22 +60,71 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         date: new Date().toISOString().split("T")[0],
       });
     }
+
+    setErrors({});
+    setTouched({});
   }, [transaction, isOpen]);
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, name: "" }));
+    setTouched((prev) => ({ ...prev, name: false })); 
+  }, [formData.type]);
+
+  const markTouched = (name: keyof typeof formData) => {
+    setTouched((prev) => ({ ...prev, [name]: true }));
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const validate = (data = formData): FormErrors => {
+    const next: FormErrors = {};
+
+    if (![transactionTypes.Deposit, transactionTypes.Withdrawal, transactionTypes.Transfer].includes(data.type)) {
+      next.type = "Tipo de transação inválido.";
+    }
+
+    const name = data.name.trim();
+    if (name.length < 3) next.name = "Descrição deve ter ao menos 3 caracteres.";
+    if (name.length > 60) next.name = "Descrição muito longa (máx. 60 caracteres).";
+
+    const amountRaw = data.amount.trim().replace(",", ".");
+    const amountNum = Number(amountRaw);
+
+    if (!amountRaw || !Number.isFinite(amountNum) || amountNum <= 0) {
+      next.amount = "Informe um valor maior que 0.";
+    } else if (!/^\d+(\.\d{1,2})?$/.test(amountRaw)) {
+      next.amount = "Use no máximo 2 casas decimais (ex: 10.50).";
+    }
+
+    if (!data.date || Number.isNaN(new Date(data.date).getTime())) {
+      next.date = "Data inválida.";
+    }
+
+    return next;
+  };
+
+  useEffect(() => {
+    setErrors(validate(formData));
+  }, [formData.name, formData.amount, formData.type, formData.date]);
+
+  const showError = (key: keyof FormErrors) => Boolean(touched[key as any] && errors[key]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const amount =
-      formData.type === transactionTypes.Deposit
-        ? parseFloat(formData.amount)
-        : -parseFloat(formData.amount);
+    const nextErrors = validate(formData);
+    setErrors(nextErrors);
+    setTouched({ type: true, name: true, amount: true, date: true, description: true });
+
+    if (Object.keys(nextErrors).length) return;
+
+    const amountNum = Number(formData.amount.trim().replace(",", "."));
+    const amount = formData.type === transactionTypes.Deposit ? amountNum : -amountNum;
 
     if (transaction) {
       updateTransaction(transaction.id, {
@@ -82,17 +151,18 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   if (!isOpen) return null;
   const isEditing = !!transaction;
 
-  const labelClass =
-    "block text-xs font-medium text-neutral-700-on-light mb-1.5";
+  const labelClass = "block text-xs font-medium text-neutral-700-on-light mb-1.5";
 
-  const inputClassNames = `
-    w-full rounded-lg px-3 py-2 text-sm
-    border border-neutral-200-on-light bg-white
-    text-neutral-900-on-light placeholder:text-neutral-500-on-light
-    outline-none
-    focus:ring-2 focus:ring-primary-200-on-light focus:border-primary-400-on-light
-    transition-colors
-  `;
+  const baseInput =
+    "w-full rounded-lg px-3 py-2 text-sm border bg-white text-neutral-900-on-light placeholder:text-neutral-500-on-light outline-none transition-colors focus:ring-2 focus:ring-primary-200-on-light focus:border-primary-400-on-light";
+
+  const inputNormal = "border-neutral-200-on-light";
+  const inputWithError =
+    "border-semantic-error-300-on-light focus:ring-semantic-error-200-on-light focus:border-semantic-error-400-on-light";
+
+  const errorText = "mt-1 text-xs text-semantic-error-700-on-light";
+
+  const datalistId = isIncome ? "income-desc-suggestions" : "expense-desc-suggestions";
 
   return (
     <div
@@ -104,7 +174,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
       role="dialog"
       aria-modal="true"
       aria-label={isEditing ? "Editar transação" : "Nova transação"}
-      onClick={onClose}
+      onClick={handleBackdropClick}
     >
       <div
         className="
@@ -113,7 +183,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           border border-neutral-200/70
           shadow-[0_18px_55px_rgba(15,23,42,0.18)]
         "
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-200/70">
           <div className="min-w-0">
@@ -148,12 +217,14 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               name="type"
               value={formData.type}
               onChange={handleChange}
-              className={inputClassNames}
+              onBlur={() => markTouched("type")}
+              className={cn(baseInput, showError("type") ? inputWithError : inputNormal)}
             >
-              <option value={transactionTypes.Deposit}>Depósito</option>
-              <option value={transactionTypes.Withdrawal}>Saque</option>
-              <option value={transactionTypes.Transfer}>Transferência</option>
+              <option value={transactionTypes.Deposit}>Depósito (Receita)</option>
+              <option value={transactionTypes.Withdrawal}>Saque (Despesa)</option>
+              <option value={transactionTypes.Transfer}>Transferência (Despesa)</option>
             </select>
+            {showError("type") ? <p className={errorText}>{errors.type}</p> : null}
           </div>
 
           <div>
@@ -163,35 +234,45 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="ex: Salário, Compras de Supermercado"
-              className={inputClassNames}
+              onBlur={() => markTouched("name")}
+              list={datalistId}
+              placeholder={isIncome ? "ex: Salário" : "ex: Alimentação"}
+              className={cn(baseInput, showError("name") ? inputWithError : inputNormal)}
               required
             />
+
+            <datalist id={datalistId}>
+              {descriptionSuggestions.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
+
+            {showError("name") ? <p className={errorText}>{errors.name}</p> : null}
+
+            <p className="mt-1 text-[11px] text-neutral-600-on-light">
+              Sugestões mudam conforme o tipo (receita vs despesa). {/* datalist/list [web:184] */}
+            </p>
           </div>
 
           <div>
             <label className={labelClass}>Valor</label>
             <div className="relative">
-              <span
-                className="
-                  absolute left-3 top-1/2 -translate-y-1/2
-                  text-sm text-neutral-500-on-light
-                "
-              >
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-neutral-500-on-light">
                 R$
               </span>
               <input
-                type="number"
+                type="text"
                 inputMode="decimal"
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
+                onBlur={() => markTouched("amount")}
                 placeholder="0,00"
-                step="0.01"
-                className={`${inputClassNames} pl-9`}
+                className={cn(baseInput, "pl-9", showError("amount") ? inputWithError : inputNormal)}
                 required
               />
             </div>
+            {showError("amount") ? <p className={errorText}>{errors.amount}</p> : null}
           </div>
 
           <div>
@@ -201,9 +282,11 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className={inputClassNames}
+              onBlur={() => markTouched("date")}
+              className={cn(baseInput, showError("date") ? inputWithError : inputNormal)}
               required
             />
+            {showError("date") ? <p className={errorText}>{errors.date}</p> : null}
           </div>
 
           <div>
@@ -212,9 +295,10 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               name="description"
               value={formData.description}
               onChange={handleChange}
+              onBlur={() => markTouched("description")}
               placeholder="Adicione quaisquer notas adicionais..."
               rows={3}
-              className={`${inputClassNames} resize-none`}
+              className={cn(baseInput, "resize-none", inputNormal)}
             />
           </div>
 
