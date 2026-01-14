@@ -1,4 +1,3 @@
-// src/components/dashboard/TransactionTypeCharts.tsx
 'use client';
 
 import { formatCurrency } from '@/lib/formatters';
