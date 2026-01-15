@@ -6,6 +6,13 @@ export const transactionTypes = {
   Deposit: 'Deposito' as transactionType,
 }
 
+export interface TransactionAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+}
+
 export interface Transaction {
   id: number;
   name: string;
@@ -14,6 +21,7 @@ export interface Transaction {
   amount: number;
   type: transactionType;
   description?: string;
+  attachments?: TransactionAttachment[];
 }
 
 export interface TransactionListProps {

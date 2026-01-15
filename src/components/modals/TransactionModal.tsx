@@ -6,6 +6,9 @@ import { Transaction, transactionType, transactionTypes } from "@/types";
 import { useTransactions } from "@/contexts/TransactionContext";
 import { cn } from "@/lib/utils";
 
+import { saveAttachment, deleteAttachment } from "@/lib/attachmentsStore";
+import type { TransactionAttachment } from "@/types";
+
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +22,10 @@ const expenseSuggestions = ["Alimentação", "Supermercado", "Transporte", "Mora
 
 export function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { addTransaction, updateTransaction } = useTransactions();
+
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [attachmentMeta, setAttachmentMeta] = useState<TransactionAttachment[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({}); // key: localKey (name+size+lastModified) -> blob url
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,11 +45,19 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     [isIncome]
   );
 
+  const datalistId = isIncome ? "income-desc-suggestions" : "expense-desc-suggestions";
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
 
   useEffect(() => {
+    Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url)); // cleanup [web:254]
+    setPreviewUrls({});
+
+    setSelectedFiles([]);
+    setAttachmentMeta(transaction?.attachments ?? []);
+
     if (transaction) {
       setFormData({
         name: transaction.name,
@@ -67,7 +82,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
   useEffect(() => {
     setFormData((prev) => ({ ...prev, name: "" }));
-    setTouched((prev) => ({ ...prev, name: false })); 
+    setTouched((prev) => ({ ...prev, name: false }));
   }, [formData.type]);
 
   const markTouched = (name: keyof typeof formData) => {
@@ -79,6 +94,31 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const fileKey = (f: File) => `${f.name}-${f.size}-${f.lastModified}`;
+
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const list = e.currentTarget.files;
+    if (!list) return;
+
+    const files = Array.from(list);
+    setSelectedFiles(files);
+
+    const next: Record<string, string> = {};
+    for (const f of files) {
+      if (f.type.startsWith("image/")) {
+        next[fileKey(f)] = URL.createObjectURL(f);
+      }
+    }
+
+    Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    setPreviewUrls(next);
+  };
+
+  const removeExistingAttachment = async (id: string) => {
+    await deleteAttachment(id);
+    setAttachmentMeta((prev) => prev.filter((a) => a.id !== id));
   };
 
   const validate = (data = formData): FormErrors => {
@@ -114,7 +154,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
   const showError = (key: keyof FormErrors) => Boolean(touched[key as any] && errors[key]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const nextErrors = validate(formData);
@@ -122,6 +162,16 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     setTouched({ type: true, name: true, amount: true, date: true, description: true });
 
     if (Object.keys(nextErrors).length) return;
+
+    const newAttachments: TransactionAttachment[] = [];
+
+    for (const file of selectedFiles) {
+      const id = crypto.randomUUID();
+      await saveAttachment(id, file);
+      newAttachments.push({ id, name: file.name, type: file.type, size: file.size });
+    }
+
+    const mergedAttachments = [...(attachmentMeta ?? []), ...newAttachments];
 
     const amountNum = Number(formData.amount.trim().replace(",", "."));
     const amount = formData.type === transactionTypes.Deposit ? amountNum : -amountNum;
@@ -133,6 +183,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         type: formData.type,
         description: formData.description,
         date: formData.date,
+        attachments: mergedAttachments,
       });
     } else {
       addTransaction({
@@ -142,6 +193,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
         description: formData.description,
         date: formData.date,
         reference: "Ref",
+        attachments: mergedAttachments,
       });
     }
 
@@ -161,8 +213,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     "border-semantic-error-300-on-light focus:ring-semantic-error-200-on-light focus:border-semantic-error-400-on-light";
 
   const errorText = "mt-1 text-xs text-semantic-error-700-on-light";
-
-  const datalistId = isIncome ? "income-desc-suggestions" : "expense-desc-suggestions";
 
   return (
     <div
@@ -250,7 +300,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             {showError("name") ? <p className={errorText}>{errors.name}</p> : null}
 
             <p className="mt-1 text-[11px] text-neutral-600-on-light">
-              Sugestões mudam conforme o tipo (receita vs despesa). {/* datalist/list [web:184] */}
+              Sugestões mudam conforme o tipo (receita vs despesa).
             </p>
           </div>
 
@@ -300,6 +350,60 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               rows={3}
               className={cn(baseInput, "resize-none", inputNormal)}
             />
+          </div>
+
+          <div>
+            <label className={labelClass}>Anexos (opcional)</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*,.pdf"
+              onChange={handleFilesChange}
+              className={cn(baseInput, inputNormal)}
+            />
+
+            {(attachmentMeta.length > 0 || selectedFiles.length > 0) ? (
+              <div className="mt-3 space-y-2">
+                {attachmentMeta.map((a) => (
+                  <div key={a.id} className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-neutral-900-on-light truncate">{a.name}</p>
+                      <p className="text-[11px] text-neutral-600-on-light">{Math.round(a.size / 1024)} KB</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => removeExistingAttachment(a.id)}
+                      className="text-xs text-neutral-700-on-light hover:text-neutral-900-on-light"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                ))}
+
+                {selectedFiles.map((f) => {
+                  const key = fileKey(f);
+                  return (
+                    <div key={key} className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-neutral-900-on-light truncate">{f.name}</p>
+                        <p className="text-[11px] text-neutral-600-on-light">{Math.round(f.size / 1024)} KB</p>
+                      </div>
+
+                      {f.type.startsWith("image/") && previewUrls[key] ? (
+                        <img
+                          src={previewUrls[key]}
+                          alt={f.name}
+                          className="h-10 w-10 rounded-md object-cover border border-neutral-200/70"
+                        />
+                      ) : (
+                        <span className="text-[11px] text-neutral-600-on-light">Arquivo</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
 
           <div className="flex gap-3 pt-2">

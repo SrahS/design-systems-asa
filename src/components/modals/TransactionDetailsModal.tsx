@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Transaction, transactionType, transactionTypes } from "@/types";
 import { cn } from "@/lib/utils";
+
+import { getAttachment } from "@/lib/attachmentsStore";
 
 interface TransactionDetailsModalProps {
   isOpen: boolean;
@@ -10,11 +13,68 @@ interface TransactionDetailsModalProps {
   transaction: Transaction | null;
 }
 
+type AttachmentPreview = {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+};
+
 export function TransactionDetailsModal({
   isOpen,
   onClose,
   transaction,
 }: TransactionDetailsModalProps) {
+  const [attachmentPreviews, setAttachmentPreviews] = useState<AttachmentPreview[]>([]);
+  const [attachmentsLoading, setAttachmentsLoading] = useState(false);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen || !transaction) return;
+
+    let cancelled = false;
+    setAttachmentsLoading(true);
+
+    (async () => {
+      const next: AttachmentPreview[] = [];
+
+      for (const a of transaction.attachments ?? []) {
+        const file = await getAttachment(a.id);
+        if (!file) continue;
+
+        const url = URL.createObjectURL(file);
+        next.push({
+          id: a.id,
+          name: a.name,
+          type: a.type,
+          size: a.size,
+          url,
+        });
+      }
+
+      if (!cancelled) {
+        setAttachmentPreviews(next);
+        setAttachmentsLoading(false);
+      } else {
+        next.forEach((p) => URL.revokeObjectURL(p.url));
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      setAttachmentsLoading(false);
+
+      setAttachmentPreviews((prev) => {
+        prev.forEach((p) => URL.revokeObjectURL(p.url));
+        return [];
+      });
+    };
+  }, [isOpen, transaction?.id]);
+
   if (!isOpen || !transaction) return null;
 
   const formattedDate = new Date(transaction.date).toLocaleDateString("pt-BR", {
@@ -28,7 +88,6 @@ export function TransactionDetailsModal({
       case transactionTypes.Deposit:
         return "bg-semantic-success-100-on-light text-semantic-success-900-on-light";
       case transactionTypes.Withdrawal:
-        return "bg-semantic-error-100-on-light text-semantic-error-900-on-light";
       case transactionTypes.Transfer:
         return "bg-semantic-error-100-on-light text-semantic-error-900-on-light";
       default:
@@ -52,7 +111,7 @@ export function TransactionDetailsModal({
       role="dialog"
       aria-modal="true"
       aria-label="Detalhes da transação"
-      onClick={onClose}
+      onClick={handleBackdropClick}
     >
       <div
         className="
@@ -61,7 +120,6 @@ export function TransactionDetailsModal({
           border border-neutral-200/70
           shadow-[0_18px_55px_rgba(15,23,42,0.18)]
         "
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-200/70">
           <div className="min-w-0">
@@ -83,10 +141,12 @@ export function TransactionDetailsModal({
               transition-colors
             "
             aria-label="Fechar"
+            type="button"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
+
         <div className="px-6 py-5 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm text-neutral-900-on-light">Tipo</p>
@@ -140,6 +200,52 @@ export function TransactionDetailsModal({
                 </p>
               </div>
             ) : null}
+
+            <div className="space-y-2">
+              <p className="text-xs text-neutral-600-on-light">Anexos</p>
+
+              {attachmentsLoading ? (
+                <p className="text-sm text-neutral-700-on-light">Carregando anexos...</p>
+              ) : (transaction.attachments?.length ? (
+                <div className="space-y-2">
+                  {attachmentPreviews.map((a) => (
+                    <div
+                      key={a.id}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200/70 bg-neutral-50/60 p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-neutral-1000-on-light truncate">
+                          {a.name}
+                        </p>
+                        <p className="text-[11px] text-neutral-600-on-light">
+                          {Math.round(a.size / 1024)} KB
+                        </p>
+                      </div>
+
+                      {a.type.startsWith("image/") ? (
+                        <a href={a.url} target="_blank" rel="noreferrer">
+                          <img
+                            src={a.url}
+                            alt={a.name}
+                            className="h-12 w-12 rounded-lg object-cover border border-neutral-200/70"
+                          />
+                        </a>
+                      ) : (
+                        <a
+                          href={a.url}
+                          download={a.name}
+                          className="text-sm text-primary-900-on-light hover:underline"
+                        >
+                          Baixar
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-neutral-700-on-light">Nenhum anexo.</p>
+              ))}
+            </div>
           </div>
 
           <div className="pt-2">
@@ -151,6 +257,7 @@ export function TransactionDetailsModal({
                 hover:bg-primary-800-on-light
                 transition-colors
               "
+              type="button"
             >
               Fechar
             </button>
