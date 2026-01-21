@@ -36,7 +36,7 @@ export function DashboardView() {
     fetchTransactions();
   }, []);
 
-  const recentTransactions = transactions.slice().reverse().slice(0, 3);
+  const recentTransactions = transactions.slice(0, 3);
 
   const dynamicAccount = {
     ...mockAccount,

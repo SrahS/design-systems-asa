@@ -12,7 +12,7 @@ export const transactionService = {
   // GET todas as transações
   fetchAllTransactions: async (): Promise<Transaction[]> => {
     const response = await api.get<Transaction[]>('/transactions');
-    return response.data;
+    return response.data.slice().reverse();
   },
 
   // GET transação por ID

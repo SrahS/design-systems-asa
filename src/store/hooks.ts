@@ -61,7 +61,8 @@ export function useTransactions() {
     expenses,
     loading,
     error,
-    // Async actions (comunicam com servidor)
+
+    // actions (comunicam com servidor)
     fetchTransactions: () => dispatch(fetchTransactions()),
     addTransaction: (newTransaction: Omit<any, 'id'>) =>
       dispatch(addTransactionAsync(newTransaction)),
