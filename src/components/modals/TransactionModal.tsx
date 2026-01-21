@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { Transaction, transactionType, transactionTypes } from "@/types";
-import { useTransactions } from "@/contexts/TransactionContext";
+import { useTransactions } from "@/store/hooks";
 import { cn } from "@/lib/utils";
 
 import { saveAttachment, deleteAttachment } from "@/lib/attachmentsStore";
@@ -21,11 +21,18 @@ const incomeSuggestions = ["Salário", "Freelance", "Reembolso", "Dividendos", "
 const expenseSuggestions = ["Alimentação", "Supermercado", "Transporte", "Moradia", "Saúde", "Lazer", "Educação", "Assinaturas", "Outros"];
 
 export function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
-  const { addTransaction, updateTransaction } = useTransactions();
+  const { 
+    addTransaction, 
+    updateTransaction,
+    loading,
+    error: reduxError 
+  } = useTransactions();
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [attachmentMeta, setAttachmentMeta] = useState<TransactionAttachment[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({}); // key: localKey (name+size+lastModified) -> blob url
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -52,11 +59,13 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   };
 
   useEffect(() => {
-    Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url)); // cleanup [web:254]
+    Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
     setPreviewUrls({});
 
     setSelectedFiles([]);
     setAttachmentMeta(transaction?.attachments ?? []);
+    setLocalError(null);
+    setIsSubmitting(false);
 
     if (transaction) {
       setFormData({
@@ -117,8 +126,13 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   };
 
   const removeExistingAttachment = async (id: string) => {
-    await deleteAttachment(id);
-    setAttachmentMeta((prev) => prev.filter((a) => a.id !== id));
+    try {
+      await deleteAttachment(id);
+      setAttachmentMeta((prev) => prev.filter((a) => a.id !== id));
+    } catch (err) {
+      setLocalError("Erro ao remover anexo. Tente novamente.");
+      console.error("Erro ao remover anexo:", err);
+    }
   };
 
   const validate = (data = formData): FormErrors => {
@@ -163,41 +177,61 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
     if (Object.keys(nextErrors).length) return;
 
-    const newAttachments: TransactionAttachment[] = [];
+    setIsSubmitting(true);
+    setLocalError(null);
 
-    for (const file of selectedFiles) {
-      const id = crypto.randomUUID();
-      await saveAttachment(id, file);
-      newAttachments.push({ id, name: file.name, type: file.type, size: file.size });
+    try {
+      const newAttachments: TransactionAttachment[] = [];
+
+      // Salvar novos anexos
+      for (const file of selectedFiles) {
+        try {
+          const id = crypto.randomUUID();
+          await saveAttachment(id, file);
+          newAttachments.push({ id, name: file.name, type: file.type, size: file.size });
+        } catch (err) {
+          console.error("Erro ao salvar anexo:", err);
+          setLocalError("Erro ao salvar um ou mais anexos. Tente novamente.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      const mergedAttachments = [...(attachmentMeta ?? []), ...newAttachments];
+
+      const amountNum = Number(formData.amount.trim().replace(",", "."));
+      const amount = formData.type === transactionTypes.Deposit ? amountNum : -amountNum;
+
+      // Usar dispatch async para comunicar com servidor
+      if (transaction) {
+        await updateTransaction(transaction.id, {
+          name: formData.name,
+          amount,
+          type: formData.type,
+          description: formData.description,
+          date: formData.date,
+          attachments: mergedAttachments,
+        });
+      } else {
+        await addTransaction({
+          name: formData.name,
+          amount,
+          type: formData.type,
+          description: formData.description,
+          date: formData.date,
+          reference: "Ref",
+          attachments: mergedAttachments,
+        });
+      }
+
+      onClose();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erro ao salvar transação";
+      setLocalError(errorMessage);
+      console.error("Erro ao submeter formulário:", err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const mergedAttachments = [...(attachmentMeta ?? []), ...newAttachments];
-
-    const amountNum = Number(formData.amount.trim().replace(",", "."));
-    const amount = formData.type === transactionTypes.Deposit ? amountNum : -amountNum;
-
-    if (transaction) {
-      updateTransaction(transaction.id, {
-        name: formData.name,
-        amount,
-        type: formData.type,
-        description: formData.description,
-        date: formData.date,
-        attachments: mergedAttachments,
-      });
-    } else {
-      addTransaction({
-        name: formData.name,
-        amount,
-        type: formData.type,
-        description: formData.description,
-        date: formData.date,
-        reference: "Ref",
-        attachments: mergedAttachments,
-      });
-    }
-
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -213,6 +247,9 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     "border-semantic-error-300-on-light focus:ring-semantic-error-200-on-light focus:border-semantic-error-400-on-light";
 
   const errorText = "mt-1 text-xs text-semantic-error-700-on-light";
+
+  // Mostrar erro do Redux ou erro local
+  const displayError = reduxError || localError;
 
   return (
     <div
@@ -252,15 +289,26 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               text-neutral-600-on-light
               hover:bg-neutral-200-on-light hover:text-neutral-900-on-light
               transition-colors
+              disabled:opacity-50 disabled:cursor-not-allowed
             "
             aria-label="Fechar"
             type="button"
+            disabled={isSubmitting}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+          {/* Erro global da API */}
+          {displayError && (
+            <div className="p-3 rounded-lg bg-semantic-error-50-on-light border border-semantic-error-200-on-light">
+              <p className="text-sm text-semantic-error-700-on-light">
+                {displayError}
+              </p>
+            </div>
+          )}
+
           <div>
             <label className={labelClass}>Tipo de Transação</label>
             <select
@@ -269,6 +317,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               onChange={handleChange}
               onBlur={() => markTouched("type")}
               className={cn(baseInput, showError("type") ? inputWithError : inputNormal)}
+              disabled={isSubmitting}
             >
               <option value={transactionTypes.Deposit}>Depósito (Receita)</option>
               <option value={transactionTypes.Withdrawal}>Saque (Despesa)</option>
@@ -288,6 +337,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               list={datalistId}
               placeholder={isIncome ? "ex: Salário" : "ex: Alimentação"}
               className={cn(baseInput, showError("name") ? inputWithError : inputNormal)}
+              disabled={isSubmitting}
               required
             />
 
@@ -319,6 +369,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 onBlur={() => markTouched("amount")}
                 placeholder="0,00"
                 className={cn(baseInput, "pl-9", showError("amount") ? inputWithError : inputNormal)}
+                disabled={isSubmitting}
                 required
               />
             </div>
@@ -334,6 +385,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               onChange={handleChange}
               onBlur={() => markTouched("date")}
               className={cn(baseInput, showError("date") ? inputWithError : inputNormal)}
+              disabled={isSubmitting}
               required
             />
             {showError("date") ? <p className={errorText}>{errors.date}</p> : null}
@@ -349,6 +401,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               placeholder="Adicione quaisquer notas adicionais..."
               rows={3}
               className={cn(baseInput, "resize-none", inputNormal)}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -360,6 +413,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               accept="image/*,.pdf"
               onChange={handleFilesChange}
               className={cn(baseInput, inputNormal)}
+              disabled={isSubmitting}
             />
 
             {(attachmentMeta.length > 0 || selectedFiles.length > 0) ? (
@@ -374,7 +428,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                     <button
                       type="button"
                       onClick={() => removeExistingAttachment(a.id)}
-                      className="text-xs text-neutral-700-on-light hover:text-neutral-900-on-light"
+                      className="text-xs text-neutral-700-on-light hover:text-neutral-900-on-light disabled:opacity-50"
+                      disabled={isSubmitting}
                     >
                       Remover
                     </button>
@@ -416,7 +471,9 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 text-neutral-800-on-light
                 hover:bg-neutral-200-on-light
                 transition-colors
+                disabled:opacity-50 disabled:cursor-not-allowed
               "
+              disabled={isSubmitting}
             >
               Cancelar
             </button>
@@ -428,9 +485,20 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 bg-primary-900-on-light text-white
                 hover:bg-primary-800-on-light
                 transition-colors
+                disabled:opacity-50 disabled:cursor-not-allowed
               "
+              disabled={isSubmitting || loading}
             >
-              {isEditing ? "Atualizar" : "Criar"}
+              {isSubmitting || loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                  Salvando...
+                </span>
+              ) : isEditing ? (
+                "Atualizar"
+              ) : (
+                "Criar"
+              )}
             </button>
           </div>
         </form>

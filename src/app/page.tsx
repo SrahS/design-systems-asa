@@ -3,7 +3,6 @@
 import { Header } from '@/components/layout/Header';
 import { DashboardView } from '@/components/views/DashboardView';
 import { TransactionsView } from '@/components/views/TransactionView';
-import { mockAccount, mockMetrics, mockTransactions } from '@/data/mockData';
 import { useTab } from '@/contexts/TabContext';
 import { TabConst } from '@/types/tabTypes';
 
@@ -24,9 +23,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-primary-100-on-light">
       <Header
-        accountName={mockAccount.name}
-        accountNumber={mockAccount.number}
-        status={mockAccount.status}
+        accountName='Bem vindo, Alisson'
+        accountNumber='**** 4892'
+        status='Ativo'
       />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
