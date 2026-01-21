@@ -1,0 +1,6 @@
+{
+  "/api/transactions": "/transactions",
+  "/api/transactions/:id": "/transactions/:id",
+  "/api/categories": "/categories",
+  "/api/payment-methods": "/paymentMethods"
+}

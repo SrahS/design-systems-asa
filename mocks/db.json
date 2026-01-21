@@ -1,0 +1,72 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "date": "2024-01-15",
+      "description": "Compra em supermercado",
+      "category": "Alimentação",
+      "amount": 156.50,
+      "type": "expense",
+      "status": "completed",
+      "paymentMethod": "credit_card",
+      "cardBrand": "Visa"
+    },
+    {
+      "id": 2,
+      "date": "2024-01-14",
+      "description": "Transferência recebida",
+      "category": "Renda",
+      "amount": 3000.00,
+      "type": "income",
+      "status": "completed",
+      "paymentMethod": "bank_transfer",
+      "cardBrand": null
+    },
+    {
+      "id": 3,
+      "date": "2024-01-13",
+      "description": "Conta de luz",
+      "category": "Utilidades",
+      "amount": 180.00,
+      "type": "expense",
+      "status": "pending",
+      "paymentMethod": "debit_card",
+      "cardBrand": "Mastercard"
+    },
+    {
+      "id": 4,
+      "date": "2024-01-12",
+      "description": "Compra online",
+      "category": "Shopping",
+      "amount": 299.90,
+      "type": "expense",
+      "status": "completed",
+      "paymentMethod": "credit_card",
+      "cardBrand": "Elo"
+    },
+    {
+      "id": 5,
+      "date": "2024-01-11",
+      "description": "Salário",
+      "category": "Renda",
+      "amount": 5000.00,
+      "type": "income",
+      "status": "completed",
+      "paymentMethod": "bank_transfer",
+      "cardBrand": null
+    }
+  ],
+  "categories": [
+    { "id": 1, "name": "Alimentação", "icon": "utensils", "color": "#FF6B6B" },
+    { "id": 2, "name": "Transporte", "icon": "car", "color": "#4ECDC4" },
+    { "id": 3, "name": "Utilidades", "icon": "zap", "color": "#FFE66D" },
+    { "id": 4, "name": "Shopping", "icon": "shopping-bag", "color": "#95E1D3" },
+    { "id": 5, "name": "Renda", "icon": "trending-up", "color": "#6BCB77" }
+  ],
+  "paymentMethods": [
+    { "id": 1, "name": "credit_card", "label": "Cartão de Crédito" },
+    { "id": 2, "name": "debit_card", "label": "Cartão de Débito" },
+    { "id": 3, "name": "bank_transfer", "label": "Transferência" },
+    { "id": 4, "name": "cash", "label": "Dinheiro" }
+  ]
+}
