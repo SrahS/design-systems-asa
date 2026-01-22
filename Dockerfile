@@ -8,8 +8,7 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn server:only && yarn build
-
+RUN yarn server:only & sleep 10 && yarn build
 FROM nginx:stable-alpine
 
 COPY --from=build /app/out /usr/share/nginx/html
