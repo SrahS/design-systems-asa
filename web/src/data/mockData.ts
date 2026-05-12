@@ -19,7 +19,7 @@ export const mockMetrics: Metrics = {
   },
 };
 
-export const initialTransactions: Transaction[] = transactionsJSON;
+export const initialTransactions: Transaction[] = transactionsJSON as Transaction[];
 
 export const createInitialAccount = (transactions: Transaction[]): Account => {
   const totalDeposits = transactions

@@ -166,7 +166,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     setErrors(validate(formData));
   }, [formData.name, formData.amount, formData.type, formData.date]);
 
-  const showError = (key: keyof FormErrors) => Boolean(touched[key as any] && errors[key]);
+  const showError = (key: keyof FormErrors) => Boolean(touched[key] && errors[key]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

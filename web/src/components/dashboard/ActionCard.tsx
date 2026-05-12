@@ -29,7 +29,7 @@ export function ActionCard({ icon, title, description, onClick }: ActionCardProp
         <div>
           <h3 className="
             font-semibold
-            text-primary-1200-on-ligh
+            text-primary-1200-on-light
           ">
             {title}
           </h3>

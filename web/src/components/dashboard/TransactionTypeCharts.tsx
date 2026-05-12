@@ -3,7 +3,7 @@
 import { formatCurrency } from '@/lib/formatters';
 import { Transaction } from '@/types';
 import { groupByType } from '@/utils/transactions';
-import type { TooltipProps } from 'recharts';
+import type { TooltipContentProps } from 'recharts';
 import {
   ResponsiveContainer,
   PieChart,
@@ -21,7 +21,7 @@ const COLORS = ['#2D5FC5', '#F7965B', '#36CEC3'];
 type Props = { transactions: Transaction[] };
 
 
-function CurrencyTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function CurrencyTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
   if (!active || !payload?.length) return null;
 
   return (
@@ -49,7 +49,7 @@ function CurrencyTooltip({ active, payload, label }: TooltipProps<number, string
   );
 }
 
-function CountTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function CountTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
   if (!active || !payload?.length) return null;
 
   return (
