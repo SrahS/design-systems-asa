@@ -1,0 +1,342 @@
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  Timestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import type {
+  Transaction,
+  CreateTransactionInput,
+  ExcludeTransactionInput,
+  UpdateTransactionInput
+} from "@/types/transaction";
+import { parseDateTime, toDateTime, toIsoDate } from "@/utils/formatDate";
+import { db } from "./firebase";
+
+const TRANSACTIONS_COLLECTION = "transactions";
+
+const toUpdatedAt = (value: unknown): string | null => {
+  if (value == null || value === "") {
+    return null;
+  }
+  if (value instanceof Timestamp) {
+    return value.toDate().toISOString();
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return null;
+};
+
+const toTransactionDateString = (value: unknown): string => {
+  if (value instanceof Timestamp) {
+    return value.toDate().toISOString();
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return "";
+};
+
+const toFiniteNumber = (value: unknown, fallback: number): number => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+  return fallback;
+};
+
+const parseIdField = (
+  rawValue: unknown,
+  docId: string,
+  fallbackFromDoc: boolean
+): number => {
+  let id: number;
+  if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+    id = rawValue;
+  } else if (typeof rawValue === "string") {
+    const parsed = Number(rawValue);
+    id = Number.isFinite(parsed) ? parsed : NaN;
+  } else {
+    id = NaN;
+  }
+  if (!Number.isFinite(id) && fallbackFromDoc) {
+    const fromDocId = Number(docId);
+    id = Number.isFinite(fromDocId) ? fromDocId : 0;
+  }
+  return Number.isFinite(id) ? id : 0;
+};
+
+const mapDocumentToTransaction = (
+  docId: string,
+  raw: Record<string, unknown>
+): Transaction => {
+  const id_transactions = parseIdField(raw.id_transactions, docId, true);
+  const id_users = parseIdField(raw.id_users, docId, false);
+  const id_categories = parseIdField(raw.id_categories, docId, false);
+
+  return {
+    id_transactions,
+    id_users,
+    id_categories,
+    amount: toFiniteNumber(raw.amount, 0),
+    description: typeof raw.description === "string" ? raw.description : "",
+    occured_at: toTransactionDateString(raw.occured_at),
+    notes: typeof raw.notes === "string" ? raw.notes : "",
+    excluded: raw.excluded === true,
+    attachment_count: toFiniteNumber(raw.attachment_count, 0),
+    created_at: toTransactionDateString(raw.created_at),
+    updated_at: toUpdatedAt(raw.updated_at),
+  };
+};
+
+const fetchTransactionsForUserFromFirestore = async (
+  userId: number
+): Promise<Transaction[]> => {
+  const snapshot = await getDocs(
+    query(
+      collection(db, TRANSACTIONS_COLLECTION),
+      where("id_users", "==", userId)
+    )
+  );
+  const transactions = snapshot.docs.map((doc) =>
+    mapDocumentToTransaction(doc.id, doc.data() as Record<string, unknown>)
+  );
+  return transactions
+    .filter((transaction) => !transaction.excluded)
+    .sort(
+      (a, b) =>
+        parseDateTime(b.occured_at).getTime() -
+        parseDateTime(a.occured_at).getTime()
+    );
+};
+
+type TransactionsListener = () => void;
+
+const transactionsListeners = new Set<TransactionsListener>();
+let transactionsRevision = 0;
+
+export const subscribeTransactionsChanged = (
+  listener: TransactionsListener
+): (() => void) => {
+  transactionsListeners.add(listener);
+  return () => {
+    transactionsListeners.delete(listener);
+  };
+};
+
+export const getTransactionsRevision = (): number => transactionsRevision;
+
+const notifyTransactionsChanged = (): void => {
+  transactionsRevision += 1;
+  const listenersSnapshot = [...transactionsListeners];
+  queueMicrotask(() => {
+    listenersSnapshot.forEach((listener) => listener());
+  });
+};
+
+const getTransactions = async (
+  userId: number | null = null
+): Promise<Transaction[]> => {
+  if (userId === null) {
+    return [];
+  }
+  return fetchTransactionsForUserFromFirestore(userId);
+};
+
+const getTransactionsMap = async (
+  userId: number | null = null
+): Promise<Map<number, Transaction>> => {
+  const list = await getTransactions(userId);
+  return new Map(
+    list.map((transaction) => [transaction.id_transactions, transaction])
+  );
+};
+
+const getTransactionById = async (
+  transactionId: number,
+  userId: number | null = null
+): Promise<Transaction | null> => {
+  const map = await getTransactionsMap(userId);
+  return map.get(transactionId) ?? null;
+};
+
+const getNextTransactionIdForUser = async (userId: number): Promise<number> => {
+  const snapshot = await getDocs(
+    query(
+      collection(db, TRANSACTIONS_COLLECTION),
+      where("id_users", "==", userId)
+    )
+  );
+
+  let maxId = 0;
+  for (const docSnap of snapshot.docs) {
+    const raw = docSnap.data() as Record<string, unknown>;
+    const id = parseIdField(raw.id_transactions, docSnap.id, true);
+    maxId = Math.max(maxId, id);
+  }
+
+  return maxId + 1;
+};
+
+const createTransaction = async (
+  input: CreateTransactionInput
+): Promise<Transaction> => {
+  const isoDate = toIsoDate(input.occured_at);
+  const occurredAt = toDateTime(isoDate);
+  const nextId = await getNextTransactionIdForUser(input.userId);
+  const occurredAtDate = parseDateTime(occurredAt);
+
+  const firestorePayload = {
+    id_transactions: nextId,
+    id_users: input.userId,
+    id_categories: input.categoryId,
+    amount: input.amount,
+    description: input.description.trim(),
+    occured_at: Timestamp.fromDate(occurredAtDate),
+    notes: input.notes.trim(),
+    excluded: false,
+    attachment_count: input.attachmentsCount,
+    created_at: Timestamp.fromDate(occurredAtDate),
+    updated_at: null,
+  };
+
+  await addDoc(collection(db, TRANSACTIONS_COLLECTION), firestorePayload);
+  notifyTransactionsChanged();
+
+  return {
+    id_transactions: nextId,
+    id_users: input.userId,
+    id_categories: input.categoryId,
+    amount: input.amount,
+    description: input.description.trim(),
+    occured_at: occurredAt,
+    notes: input.notes.trim(),
+    excluded: false,
+    attachment_count: input.attachmentsCount,
+    created_at: occurredAt,
+    updated_at: null,
+  };
+};
+
+const updateTransaction = async (
+  input: UpdateTransactionInput
+): Promise<Transaction> => {
+  const snapshot = await getDocs(
+    query(
+      collection(db, TRANSACTIONS_COLLECTION),
+      where("id_users", "==", input.userId),
+      where("id_transactions", "==", input.transactionId)
+    )
+  );
+
+  if (snapshot.empty) {
+    throw new Error("Transação não encontrada para atualização");
+  }
+
+  const docSnap = snapshot.docs[0];
+  const existing = mapDocumentToTransaction(
+    docSnap.id,
+    docSnap.data() as Record<string, unknown>
+  );
+
+  const isoDate = toIsoDate(input.occured_at);
+  const occurredAt = toDateTime(isoDate);
+  const occurredAtDate = parseDateTime(occurredAt);
+  const updatedAt = Timestamp.now();
+
+  await updateDoc(doc(db, TRANSACTIONS_COLLECTION, docSnap.id), {
+    id_categories: input.categoryId,
+    amount: input.amount,
+    description: input.description.trim(),
+    occured_at: Timestamp.fromDate(occurredAtDate),
+    notes: input.notes.trim(),
+    attachment_count: input.attachmentsCount,
+    updated_at: updatedAt,
+  });
+
+  notifyTransactionsChanged();
+
+  return {
+    ...existing,
+    id_categories: input.categoryId,
+    amount: input.amount,
+    description: input.description.trim(),
+    occured_at: occurredAt,
+    notes: input.notes.trim(),
+    attachment_count: input.attachmentsCount,
+    updated_at: toUpdatedAt(updatedAt),
+  };
+};
+
+const applyAttachmentCount = async (
+  transactionId: number,
+  userId: number,
+  count: number
+): Promise<void> => {
+  const snapshot = await getDocs(
+    query(
+      collection(db, TRANSACTIONS_COLLECTION),
+      where("id_users", "==", userId),
+      where("id_transactions", "==", transactionId)
+    )
+  );
+
+  if (snapshot.empty) return;
+
+  await updateDoc(doc(db, TRANSACTIONS_COLLECTION, snapshot.docs[0].id), {
+    attachment_count: count,
+    updated_at: Timestamp.now()
+  });
+  notifyTransactionsChanged();
+};
+
+const excludeTransaction = async (
+  input: ExcludeTransactionInput
+): Promise<void> => {
+  const snapshot = await getDocs(
+    query(
+      collection(db, TRANSACTIONS_COLLECTION),
+      where("id_users", "==", input.userId),
+      where("id_transactions", "==", input.transactionId)
+    )
+  );
+
+  if (snapshot.empty) {
+    throw new Error("Transação não encontrada para exclusão");
+  }
+
+  const docSnap = snapshot.docs[0];
+  const existing = mapDocumentToTransaction(
+    docSnap.id,
+    docSnap.data() as Record<string, unknown>
+  );
+
+  if (existing.excluded) {
+    return;
+  }
+
+  await updateDoc(doc(db, TRANSACTIONS_COLLECTION, docSnap.id), {
+    excluded: true,
+    updated_at: Timestamp.now(),
+  });
+
+  notifyTransactionsChanged();
+};
+
+export const transactionsService = {
+  getTransactions,
+  getTransactionsMap,
+  getTransactionById,
+  createTransaction,
+  updateTransaction,
+  applyAttachmentCount,
+  excludeTransaction
+};
