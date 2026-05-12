@@ -1,6 +1,7 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+/**
+ * @deprecated Importe `cn` de `@/design-system/utils`
+ * (ou do barrel `@/design-system`). Este arquivo é apenas
+ * um shim de compatibilidade durante a migração da Fase 4.
+ */
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from "@/design-system/utils/cn";
