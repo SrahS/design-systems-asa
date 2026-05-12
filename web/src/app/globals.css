@@ -57,17 +57,29 @@
   --color-category-transfer-icon-border: rgba(241, 243, 247, 0.55);
 
   /* ============================================================
-   * Spacing — paridade com theme.spacing do app
-   * (xxs 4, xs 8, sm 12, md 16, lg 20, xl 24, xxl 32, xxxl 40)
+   * Spacing
+   *
+   * NÃO declarar `--spacing-{xs,sm,md,lg,xl,...}` aqui.
+   * No Tailwind v4 esses keys colidem com utilities nomeadas
+   * (`max-w-lg`, `min-w-md`, `h-sm`, `w-lg`, `gap-md`, `p-md`, ...),
+   * que resolvem do namespace `--spacing-*` antes de cair em
+   * `--container-*` — sobrescrever `--spacing-lg`, por ex., faz
+   * `max-w-lg` virar 1.25rem (20px) e quebra modais/layouts.
+   *
+   * A base `--spacing` default do Tailwind v4 (0.25rem) já dá
+   * paridade 1:1 com a escala do app via utilities numéricas:
+   *   xxs 4   → *-1
+   *   xs  8   → *-2
+   *   sm  12  → *-3
+   *   md  16  → *-4
+   *   lg  20  → *-5
+   *   xl  24  → *-6
+   *   xxl 32  → *-8
+   *   xxxl 40 → *-10
+   *
+   * Os nomes semânticos (`spacing.md` etc.) ficam expostos em JS
+   * via `design-system/theme/tokens.ts`.
    * ============================================================ */
-  --spacing-xxs: 0.25rem;
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.25rem;
-  --spacing-xl: 1.5rem;
-  --spacing-xxl: 2rem;
-  --spacing-xxxl: 2.5rem;
 
   /* ============================================================
    * Radius — paridade com theme.radius do app
