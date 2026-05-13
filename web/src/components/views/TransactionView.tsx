@@ -205,7 +205,7 @@ export function TransactionsView() {
               onClick={() => setShowSearch((v) => !v)}
               className="
                 flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
-                border border-color-neutral-300-on-light hover:bg-neutral-200-on-light
+                border border-stroke hover:bg-neutral-200-on-light
                 text-neutral-900-on-light
               "
             >
@@ -217,7 +217,7 @@ export function TransactionsView() {
               onClick={() => setShowFilters((v) => !v)}
               className="
                 flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
-                border border-color-neutral-300-on-light hover:bg-neutral-200-on-light
+                border border-stroke hover:bg-neutral-200-on-light
                 text-neutral-900-on-light
               "
             >
@@ -228,8 +228,11 @@ export function TransactionsView() {
             <button
               onClick={handleNewTransaction}
               className="
-                flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
-                bg-primary-900-on-light hover:bg-primary-800-on-light text-white
+                flex items-center gap-2 px-4 py-2 rounded-md transition-colors text-sm font-semibold
+                bg-primary hover:bg-primary-hover text-off-white
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-background
+                active:opacity-pressed-strong
               "
             >
               <Plus className="w-4 h-4" />
@@ -239,29 +242,33 @@ export function TransactionsView() {
         </div>
 
         {(showSearch || showFilters) && (
-          <div className="rounded-lg p-4 bg-white border border-neutral-200-on-light space-y-3">
+          <div className="rounded-lg border border-stroke bg-background p-4 space-y-3">
             {showSearch && (
               <div className="flex items-center gap-3">
                 <div className="relative w-full">
-                  <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-subtle" />
                   <input
                     type="search"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar por nome, referência, descrição, valor..."
                     className="
-                      w-full pl-9 pr-9 py-2 rounded-lg text-sm
-                      border border-neutral-200-on-light
-                      focus:outline-none focus:ring-2 focus:ring-primary-200-on-light
+                      w-full rounded-md border border-stroke bg-surface-2 py-2 pl-9 pr-9 text-sm text-text
+                      placeholder:text-text-subtle
+                      focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background
                     "
                   />
                   {searchTerm ? (
                     <button
                       onClick={clearSearch}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-neutral-200-on-light"
+                      className="
+                        absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-text-muted
+                        transition-colors hover:bg-surface-3 hover:text-text
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                      "
                       aria-label="Limpar busca"
                     >
-                      <X className="w-4 h-4 text-neutral-600-on-light" />
+                      <X className="h-4 w-4" />
                     </button>
                   ) : null}
                 </div>
@@ -271,14 +278,13 @@ export function TransactionsView() {
             {showFilters && (
               <div className="flex flex-col md:flex-row gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-neutral-700-on-light">Tipo</span>
+                  <span className="text-xs font-medium text-text-muted">Tipo</span>
                   <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value as TypeFilter)}
                     className="
-                      px-3 py-2 rounded-lg text-sm bg-white
-                      border border-neutral-200-on-light
-                      focus:outline-none focus:ring-2 focus:ring-primary-200-on-light
+                      rounded-md border border-stroke bg-surface-2 px-3 py-2 text-sm text-text
+                      focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background
                     "
                   >
                     <option value="Todos">Todos</option>
@@ -291,9 +297,11 @@ export function TransactionsView() {
                 <button
                   onClick={resetFilters}
                   className="
-                    md:ml-auto px-3 py-2 rounded-lg text-sm font-medium
-                    border border-color-neutral-300-on-light
-                    hover:bg-neutral-200-on-light text-neutral-900-on-light
+                    md:ml-auto rounded-md border border-stroke bg-surface-2 px-3 py-2 text-sm font-medium text-text
+                    transition-colors hover:bg-surface-3
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                    focus-visible:ring-offset-2 focus-visible:ring-offset-background
+                    active:opacity-pressed-soft
                   "
                 >
                   Limpar filtros
@@ -303,7 +311,7 @@ export function TransactionsView() {
           </div>
         )}
 
-        <div className="rounded-lg p-6 bg-white border border-neutral-200-on-light">
+        <div className="rounded-lg p-6 bg-background border border-stroke">
           <h2 className="text-lg font-semibold mb-4 text-neutral-900-on-light">
             Histórico de Transações ({filteredTransactions.length})
           </h2>
