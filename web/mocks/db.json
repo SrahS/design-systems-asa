@@ -881,15 +881,6 @@
       "description": "Crédito recebido via PIX"
     },
     {
-      "id": "99",
-      "name": "Transferência entre contas",
-      "date": "2026-01-25",
-      "reference": "TRF-20260125-0099",
-      "amount": -480,
-      "type": "Transferência",
-      "description": "Transferência programada"
-    },
-    {
       "id": "100",
       "name": "Saque autorizado",
       "date": "2026-01-25",
@@ -906,10 +897,10 @@
       "date": "2026-01-21",
       "attachments": [
         {
-          "id": "0c35e616-17f8-44f5-838e-1d14797760f7",
-          "name": "Linkedin-Egoista.png",
+          "id": "18c41983-ed44-40a3-8aca-1f7a043264c2",
+          "name": "generated-image 1.png",
           "type": "image/png",
-          "size": 776422
+          "size": 4682163
         }
       ],
       "id": "b599"
