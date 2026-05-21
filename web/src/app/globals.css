@@ -1,190 +1,156 @@
 @import "tailwindcss";
 
+@theme {
+  /* ============================================================
+   * Surfaces / Chrome
+   * Espelha theme.colors.{background,surface,surface2,surface3,
+   * stroke,pill,pillStroke,shadow} do app.
+   * ============================================================ */
+  --color-background: #0b0d12;
+  --color-surface: #0f1218;
+  --color-surface-2: #141823;
+  --color-surface-3: #171b26;
+  --color-stroke: rgba(255, 255, 255, 0.08);
+  --color-pill: rgba(255, 255, 255, 0.06);
+  --color-pill-stroke: rgba(255, 255, 255, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.5);
+
+  /* ============================================================
+   * Texto
+   * ============================================================ */
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-text-subtle: rgba(255, 255, 255, 0.45);
+
+  /* ============================================================
+   * Brand / Accent
+   * ============================================================ */
+  --color-primary: #7c4dff;
+  --color-primary-hover: #6d3cff;
+  --color-cyan: #8fe7ff;
+  --color-off-white: #f1f3f7;
+
+  /* ============================================================
+   * Semantic
+   * ============================================================ */
+  --color-warning: #f9d266;
+  --color-success: #30d158;
+  --color-danger: #ff453a;
+
+  /* ============================================================
+   * Category accents — deposit (primary), withdraw (cyan),
+   * transfer (off-white). Trios card/border/iconBg/iconBorder.
+   * ============================================================ */
+  --color-category-deposit-card: rgba(124, 77, 255, 0.18);
+  --color-category-deposit-border: rgba(124, 77, 255, 0.95);
+  --color-category-deposit-icon-bg: rgba(124, 77, 255, 0.22);
+  --color-category-deposit-icon-border: rgba(124, 77, 255, 0.55);
+
+  --color-category-withdraw-card: rgba(143, 231, 255, 0.16);
+  --color-category-withdraw-border: rgba(143, 231, 255, 0.84);
+  --color-category-withdraw-icon-bg: rgba(143, 231, 255, 0.2);
+  --color-category-withdraw-icon-border: rgba(143, 231, 255, 0.58);
+
+  --color-category-transfer-card: rgba(241, 243, 247, 0.13);
+  --color-category-transfer-border: rgba(241, 243, 247, 0.72);
+  --color-category-transfer-icon-bg: rgba(241, 243, 247, 0.2);
+  --color-category-transfer-icon-border: rgba(241, 243, 247, 0.55);
+
+  /* ============================================================
+   * Spacing
+   *
+   * NÃO declarar `--spacing-{xs,sm,md,lg,xl,...}` aqui.
+   * No Tailwind v4 esses keys colidem com utilities nomeadas
+   * (`max-w-lg`, `min-w-md`, `h-sm`, `w-lg`, `gap-md`, `p-md`, ...),
+   * que resolvem do namespace `--spacing-*` antes de cair em
+   * `--container-*` — sobrescrever `--spacing-lg`, por ex., faz
+   * `max-w-lg` virar 1.25rem (20px) e quebra modais/layouts.
+   *
+   * A base `--spacing` default do Tailwind v4 (0.25rem) já dá
+   * paridade 1:1 com a escala do app via utilities numéricas:
+   *   xxs 4   → *-1
+   *   xs  8   → *-2
+   *   sm  12  → *-3
+   *   md  16  → *-4
+   *   lg  20  → *-5
+   *   xl  24  → *-6
+   *   xxl 32  → *-8
+   *   xxxl 40 → *-10
+   *
+   * Os nomes semânticos (`spacing.md` etc.) ficam expostos em JS
+   * via `design-system/theme/tokens.ts`.
+   * ============================================================ */
+
+  /* ============================================================
+   * Radius — paridade com theme.radius do app
+   * (xxs 4, xs 8, sm 12, md 16, lg 22, xl 28, xxl 34, pill 999)
+   * ============================================================ */
+  --radius-xxs: 0.25rem;
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.375rem;
+  --radius-xl: 1.75rem;
+  --radius-xxl: 2.125rem;
+  --radius-pill: 999px;
+
+  /* ============================================================
+   * Typography — paridade com theme.typography do app.
+   * App não fixa fontFamily (usa system font). Web adota Inter
+   * neutro como fallback de aproximação, sem Oswald.
+   * ============================================================ */
+  --font-family-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-xxl: 1.75rem;
+  --font-size-display: 2.5rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+
+  --letter-spacing-tight: -0.03125em;
+  --letter-spacing-normal: 0em;
+
+  /* ============================================================
+   * Shadows — paridade com theme.shadows do app (soft, lift)
+   * ============================================================ */
+  --shadow-soft: 0 10px 18px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 14px 24px rgba(0, 0, 0, 0.45);
+
+  /* ============================================================
+   * Press / interaction tokens
+   * Espelham as opacidades de press do app (0.86 / 0.85).
+   * ============================================================ */
+  --opacity-pressed-soft: 0.86;
+  --opacity-pressed-strong: 0.85;
+  --opacity-disabled: 0.5;
+
+  /* ============================================================
+   * Layout — paridade com src/constants/layout do app.
+   * Reexposto via design-system/constants/layout.ts.
+   * ============================================================ */
+  --screen-horizontal-padding: 1.125rem;
+  --max-content-width: 32.5rem;
+}
+
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
   }
 
   body {
-    @apply bg-gray-50 text-gray-900;
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
-
-@theme {
-  /* Cores Primárias (Light) */
-  --color-primary-100-on-light: #FDFDFE;
-  --color-primary-200-on-light: #F7FAFF;
-  --color-primary-300-on-light: #ECF2FE;
-  --color-primary-400-on-light: #DEEAFF;
-  --color-primary-500-on-light: #CDE0FF;
-  --color-primary-600-on-light: #BAD3FF;
-  --color-primary-700-on-light: #A3C0F8;
-  --color-primary-800-on-light: #82A7EE;
-  --color-primary-900-on-light: #0239AD;
-  --color-primary-1000-on-light: #002499;
-  --color-primary-1100-on-light: #2D5FC5;
-  --color-primary-1200-on-light: #192F5B;
-
-
-  /* Cores Primárias (Dark) */
-  --color-primary-100-on-dark:#0F1A2E;
-  --color-primary-200-on-dark: #0F1C35;
-  --color-primary-300-on-dark: #062464;
-  --color-primary-400-on-dark: #002786;
-  --color-primary-500-on-dark: #00309C;
-  --color-primary-600-on-dark: #043BAF;
-  --color-primary-700-on-dark: #0A47C8;
-  --color-primary-800-on-dark: #0953EB;
-  --color-primary-900-on-dark: #225BFF;
-  --color-primary-1000-on-dark: #0E57EF;
-  --color-primary-1100-on-dark: #89AFFF;
-  --color-primary-1200-on-dark: #CFE2FF;
-
-  /* Cores Neutras (Light) */
-  --color-neutral-50-on-light: #FDFCFD;
-  --color-neutral-100-on-light: #F7F6F7;
-  --color-neutral-200-on-light: #EAEAEA;
-  --color-neutral-300-on-light: #DCDCDC;
-  --color-neutral-400-on-light: #C9C9C9;
-  --color-neutral-500-on-light: #BDBDBD;
-  --color-neutral-600-on-light: #AEAEAE;
-  --color-neutral-700-on-light: #A0A0A0;
-  --color-neutral-800-on-light: #909090;
-  --color-neutral-900-on-light: #7B7B7B;
-  --color-neutral-950-on-light: #646464;
-
-  /* Cores Neutras (Dark) */
-  --color-neutral-950-on-dark: #393939;
-  --color-neutral-900-on-dark: #484848;
-  --color-neutral-800-on-dark: #5B5B5B;
-  --color-neutral-700-on-dark: #6D6D6D;
-  --color-neutral-600-on-dark: #818181;
-  --color-neutral-500-on-dark: #939393;
-  --color-neutral-400-on-dark: #A6A6A6;
-  --color-neutral-300-on-dark: #BABABA;
-  --color-neutral-200-on-dark: #CDCDCD;
-  --color-neutral-100-on-dark: #E6E6E6;
-  --color-neutral-50-on-dark: #F9F9F9;
-
-  /* Cores Semânticas de Sucesso (Light) */
-  --color-semantic-success-50-on-light: #FDFEFE;
-  --color-semantic-success-100-on-light: #E4F4F3;
-  --color-semantic-success-200-on-light: #C9EAE6;
-  --color-semantic-success-300-on-light: #ADDED9;
-  --color-semantic-success-400-on-light: #90D4CE;
-  --color-semantic-success-500-on-light: #69C2BC;
-  --color-semantic-success-600-on-light: #48B2AB;
-  --color-semantic-success-700-on-light: #34A099;
-  --color-semantic-success-800-on-light: #238E86;
-  --color-semantic-success-900-on-light: #007C74;
-
-  /* Cores Semânticas de Sucesso (Dark) */
-  --color-semantic-success-950-on-dark: #003F3B;
-  --color-semantic-success-900-on-dark: #005853;
-  --color-semantic-success-800-on-dark: #00716A;
-  --color-semantic-success-700-on-dark: #008C82;
-  --color-semantic-success-600-on-dark: #00A49A;
-  --color-semantic-success-500-on-dark: #15BCB1;
-  --color-semantic-success-400-on-dark: #36CEC3;
-  --color-semantic-success-300-on-dark: #53DDD4;
-  --color-semantic-success-200-on-dark: #72EAE3;
-  --color-semantic-success-100-on-dark: #9FF5F0;
-  --color-semantic-success-50-on-dark: #E8FAFA;
-
-  /* Cores Semânticas de Aviso/Alerta (Light) */
-  --color-semantic-warning-50-on-light: #FFFEFB;
-  --color-semantic-warning-100-on-light: #FEF8E3;
-  --color-semantic-warning-200-on-light: #FDECC8;
-  --color-semantic-warning-300-on-light: #FCD7AE;
-  --color-semantic-warning-400-on-light: #FBC394;
-  --color-semantic-warning-500-on-light: #F9AC78;
-  --color-semantic-warning-600-on-light: #F7965B;
-  --color-semantic-warning-700-on-light: #EF7E3E;
-  --color-semantic-warning-800-on-light: #E76521;
-  --color-semantic-warning-900-on-light: #D7571B;
-
-  /* Cores Semânticas de Aviso/Alerta (Dark) */
-  --color-semantic-warning-950-on-dark: #422201;
-  --color-semantic-warning-900-on-dark: #613400;
-  --color-semantic-warning-800-on-dark: #814400;
-  --color-semantic-warning-700-on-dark: #A05700;
-  --color-semantic-warning-600-on-dark: #BE6D00;
-  --color-semantic-warning-500-on-dark: #E08500;
-  --color-semantic-warning-400-on-dark: #F9A320;
-  --color-semantic-warning-300-on-dark: #FDC056;
-  --color-semantic-warning-200-on-dark: #FFD988;
-  --color-semantic-warning-100-on-dark: #FFF3C2;
-  --color-semantic-warning-50-on-dark: #FFFBEB;
-
-  /* Cores Semânticas de Erro (Light) */
-  --color-semantic-error-50-on-light: #FFFCFD;
-  --color-semantic-error-100-on-light: #FEE5E6;
-  --color-semantic-error-200-on-light: #FCD3D4;
-  --color-semantic-error-300-on-light: #F9BFC1;
-  --color-semantic-error-400-on-light: #F7AEAF;
-  --color-semantic-error-500-on-light: #F49899;
-  --color-semantic-error-600-on-light: #F28587;
-  --color-semantic-error-700-on-light: #EF7375;
-  --color-semantic-error-800-on-light: #EC6063;
-  --color-semantic-error-900-on-light: #EA4C4F;
-
-  /* Cores Semânticas de Erro (Dark) */
-  --color-semantic-error-950-on-dark: #4C0006;
-  --color-semantic-error-900-on-dark: #6E000B;
-  --color-semantic-error-800-on-dark: #920010;
-  --color-semantic-error-700-on-dark: #B60015;
-  --color-semantic-error-600-on-dark: #D4001A;
-  --color-semantic-error-500-on-dark: #F40020;
-  --color-semantic-error-400-on-dark: #FA2D49;
-  --color-semantic-error-300-on-dark: #FF5870;
-  --color-semantic-error-200-on-dark: #FF8097;
-  --color-semantic-error-100-on-dark: #FFB0C7;
-  --color-semantic-error-50-on-dark: #FFE8EF;
-
-  /* Font Families */
-  --font-family-sans: Inter, ui-sans-serif, system-ui;
-  --font-family-heading: Oswald, sans-serif;
-
-  /* Font Sizes - Valores de tamanho (e.g., 4.5rem) */
-  --font-size-display-xl: 4.5rem;
-  --font-size-display-lg: 3.5rem;
-  --font-size-h1: 2.5rem;
-  --font-size-h2: 2rem;
-  --font-size-h3: 1.5rem;
-  --font-size-body-lg: 1.125rem;
-  --font-size-body-md: 1rem;
-  --font-size-body-sm: 0.875rem;
-  --font-size-label-sm: 0.75rem;
-
-  /* Espaçamento */
-  --spacing-px-24: 1.5rem;
-  --spacing-px-32: 2rem;
-  --spacing-px-40: 2.5rem;
-  --spacing-px-50: 3.125rem;
-  --spacing-px-60: 3.75rem;
-  --spacing-px-160: 10rem;
-  --spacing-px-240: 15rem;
-  --spacing-h-616: 38.5rem;
-
-  /* Altura */
-  --height-h-616: 38.5rem;
-
-  /* Largura Máxima */
-  --max-width-corpo-fixo: 1232px;
-
-  /* Breakpoints (Screens) - Apenas os valores de largura */
-  --screen-sm-custom: 360px;
-  --screen-md-custom: 656px;
-  --screen-lg-custom: 1024px;
-  --screen-xl-custom: 1280px;
-  --screen-2xl-custom: 1440px;
-
-  /* Box Shadow - Apenas os valores de sombra */
-  --box-shadow-level-0: 0 0 0 rgba(0, 0, 0, 0);
-  --box-shadow-level-1: 0 1px 16px rgba(0, 0, 0, 0.25);
-  --box-shadow-level-2: 0 3px 16px rgba(0, 0, 0, 0.25);
-  --box-shadow-level-3: 0 6px 16px rgba(0, 0, 0, 0.25);
-  --box-shadow-level-4: 0 8px 16px rgba(0, 0, 0, 0.25);
-  --box-shadow-level-5: 0 12px 16px rgba(0, 0, 0, 0.25);
 }

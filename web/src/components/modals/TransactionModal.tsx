@@ -135,6 +135,16 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     }
   };
 
+  const removeSelectedFile = (key: string) => {
+    setSelectedFiles((prev) => prev.filter((f) => fileKey(f) !== key));
+    setPreviewUrls((prev) => {
+      const url = prev[key];
+      if (url) URL.revokeObjectURL(url);
+      const { [key]: _removed, ...rest } = prev;
+      return rest;
+    });
+  };
+
   const validate = (data = formData): FormErrors => {
     const next: FormErrors = {};
 
@@ -166,7 +176,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     setErrors(validate(formData));
   }, [formData.name, formData.amount, formData.type, formData.date]);
 
-  const showError = (key: keyof FormErrors) => Boolean(touched[key as any] && errors[key]);
+  const showError = (key: keyof FormErrors) => Boolean(touched[key] && errors[key]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,18 +247,21 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   if (!isOpen) return null;
   const isEditing = !!transaction;
 
-  const labelClass = "block text-xs font-medium text-neutral-700-on-light mb-1.5";
+  const fieldCardClass =
+    "rounded-md border border-pill-stroke bg-surface-2 p-4";
+
+  const labelClass =
+    "block text-xs font-medium text-text-muted mb-2";
 
   const baseInput =
-    "w-full rounded-lg px-3 py-2 text-sm border bg-white text-neutral-900-on-light placeholder:text-neutral-500-on-light outline-none transition-colors focus:ring-2 focus:ring-primary-200-on-light focus:border-primary-400-on-light";
+    "w-full rounded-md border bg-background text-text text-sm font-medium px-4 py-2.5 outline-none transition-colors placeholder:text-text-subtle focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed";
 
-  const inputNormal = "border-neutral-200-on-light";
+  const inputNormal = "border-stroke";
   const inputWithError =
-    "border-semantic-error-300-on-light focus:ring-semantic-error-200-on-light focus:border-semantic-error-400-on-light";
+    "border-danger focus:ring-danger/30 focus:border-danger";
 
-  const errorText = "mt-1 text-xs text-semantic-error-700-on-light";
+  const errorText = "mt-2 text-xs font-medium text-danger";
 
-  // Mostrar erro do Redux ou erro local
   const displayError = reduxError || localError;
 
   return (
@@ -256,7 +269,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
       className="
         fixed inset-0 z-50 p-4
         flex items-center justify-center
-        bg-black/50 backdrop-blur-sm
+        bg-black/60 backdrop-blur-sm
       "
       role="dialog"
       aria-modal="true"
@@ -265,18 +278,20 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     >
       <div
         className="
-          w-full max-w-md
-          rounded-2xl bg-white
-          border border-neutral-200/70
-          shadow-[0_18px_55px_rgba(15,23,42,0.18)]
+          flex flex-col
+          w-full max-w-md max-h-[90vh]
+          rounded-xl bg-surface
+          border border-stroke
+          shadow-lift
+          overflow-hidden
         "
       >
-        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-200/70">
+        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-stroke shrink-0">
           <div className="min-w-0">
-            <h2 className="text-lg font-bold text-neutral-1200-on-light">
+            <h2 className="text-lg font-bold text-text tracking-tight">
               {isEditing ? "Editar Transação" : "Nova Transação"}
             </h2>
-            <p className="mt-1 text-xs text-neutral-600-on-light">
+            <p className="mt-1 text-xs font-medium text-text-muted">
               Preencha os campos abaixo para {isEditing ? "atualizar" : "criar"}.
             </p>
           </div>
@@ -284,10 +299,13 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           <button
             onClick={onClose}
             className="
-              inline-flex items-center justify-center
-              h-9 w-9 rounded-lg
-              text-neutral-600-on-light
-              hover:bg-neutral-200-on-light hover:text-neutral-900-on-light
+              inline-flex items-center justify-center shrink-0
+              h-9 w-9 rounded-pill
+              bg-pill border border-stroke text-off-white
+              hover:bg-surface-3
+              active:opacity-pressed-soft
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+              focus-visible:ring-offset-2 focus-visible:ring-offset-background
               transition-colors
               disabled:opacity-50 disabled:cursor-not-allowed
             "
@@ -299,17 +317,19 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
-          {/* Erro global da API */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto px-6 py-5 space-y-3"
+        >
           {displayError && (
-            <div className="p-3 rounded-lg bg-semantic-error-50-on-light border border-semantic-error-200-on-light">
-              <p className="text-sm text-semantic-error-700-on-light">
+            <div className="p-3 rounded-md bg-danger/15 border border-danger/30">
+              <p className="text-sm font-medium text-danger">
                 {displayError}
               </p>
             </div>
           )}
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Tipo de Transação</label>
             <select
               name="type"
@@ -326,7 +346,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             {showError("type") ? <p className={errorText}>{errors.type}</p> : null}
           </div>
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Descrição</label>
             <input
               type="text"
@@ -349,15 +369,15 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
 
             {showError("name") ? <p className={errorText}>{errors.name}</p> : null}
 
-            <p className="mt-1 text-[11px] text-neutral-600-on-light">
+            <p className="mt-2 text-[11px] font-medium text-text-subtle">
               Sugestões mudam conforme o tipo (receita vs despesa).
             </p>
           </div>
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Valor</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-neutral-500-on-light">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">
                 R$
               </span>
               <input
@@ -368,7 +388,11 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 onChange={handleChange}
                 onBlur={() => markTouched("amount")}
                 placeholder="0,00"
-                className={cn(baseInput, "pl-9", showError("amount") ? inputWithError : inputNormal)}
+                className={cn(
+                  baseInput,
+                  "pl-10",
+                  showError("amount") ? inputWithError : inputNormal
+                )}
                 disabled={isSubmitting}
                 required
               />
@@ -376,7 +400,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             {showError("amount") ? <p className={errorText}>{errors.amount}</p> : null}
           </div>
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Data</label>
             <input
               type="date"
@@ -384,14 +408,18 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               value={formData.date}
               onChange={handleChange}
               onBlur={() => markTouched("date")}
-              className={cn(baseInput, showError("date") ? inputWithError : inputNormal)}
+              className={cn(
+                baseInput,
+                "[color-scheme:dark]",
+                showError("date") ? inputWithError : inputNormal
+              )}
               disabled={isSubmitting}
               required
             />
             {showError("date") ? <p className={errorText}>{errors.date}</p> : null}
           </div>
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Detalhes Adicionais (opcional)</label>
             <textarea
               name="description"
@@ -405,30 +433,48 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             />
           </div>
 
-          <div>
+          <div className={fieldCardClass}>
             <label className={labelClass}>Anexos (opcional)</label>
             <input
               type="file"
               multiple
               accept="image/*,.pdf"
               onChange={handleFilesChange}
-              className={cn(baseInput, inputNormal)}
+              className="
+                w-full rounded-md border border-stroke bg-background text-text
+                text-sm font-medium px-3 py-2.5 cursor-pointer transition-colors
+                file:mr-3 file:rounded-xs file:border-0
+                file:bg-pill file:text-text file:px-3 file:py-1.5
+                file:text-xs file:font-semibold file:cursor-pointer
+                hover:file:bg-surface-3
+                focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
               disabled={isSubmitting}
             />
 
             {(attachmentMeta.length > 0 || selectedFiles.length > 0) ? (
               <div className="mt-3 space-y-2">
                 {attachmentMeta.map((a) => (
-                  <div key={a.id} className="flex items-center justify-between gap-3">
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between gap-3 rounded-md border border-stroke bg-pill p-3"
+                  >
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-neutral-900-on-light truncate">{a.name}</p>
-                      <p className="text-[11px] text-neutral-600-on-light">{Math.round(a.size / 1024)} KB</p>
+                      <p className="text-sm font-medium text-text truncate">{a.name}</p>
+                      <p className="text-[11px] font-medium text-text-subtle">
+                        {Math.round(a.size / 1024)} KB
+                      </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => removeExistingAttachment(a.id)}
-                      className="text-xs text-neutral-700-on-light hover:text-neutral-900-on-light disabled:opacity-50"
+                      className="
+                        text-xs font-semibold text-text-muted
+                        hover:text-danger transition-colors
+                        disabled:opacity-50 disabled:cursor-not-allowed
+                      "
                       disabled={isSubmitting}
                     >
                       Remover
@@ -439,21 +485,29 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 {selectedFiles.map((f) => {
                   const key = fileKey(f);
                   return (
-                    <div key={key} className="flex items-center justify-between gap-3">
+                    <div
+                      key={key}
+                      className="flex items-center justify-between gap-3 rounded-md border border-stroke bg-pill p-3"
+                    >
                       <div className="min-w-0">
-                        <p className="text-xs font-medium text-neutral-900-on-light truncate">{f.name}</p>
-                        <p className="text-[11px] text-neutral-600-on-light">{Math.round(f.size / 1024)} KB</p>
+                        <p className="text-sm font-medium text-text truncate">{f.name}</p>
+                        <p className="text-[11px] font-medium text-text-subtle">
+                          {Math.round(f.size / 1024)} KB
+                        </p>
                       </div>
 
-                      {f.type.startsWith("image/") && previewUrls[key] ? (
-                        <img
-                          src={previewUrls[key]}
-                          alt={f.name}
-                          className="h-10 w-10 rounded-md object-cover border border-neutral-200/70"
-                        />
-                      ) : (
-                        <span className="text-[11px] text-neutral-600-on-light">Arquivo</span>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedFile(key)}
+                        className="
+                          text-xs font-semibold text-text-muted
+                          hover:text-danger transition-colors
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                        "
+                        disabled={isSubmitting}
+                      >
+                        Remover
+                      </button>
                     </div>
                   );
                 })}
@@ -466,10 +520,13 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
               type="button"
               onClick={onClose}
               className="
-                flex-1 px-4 py-2.5 rounded-lg text-sm font-medium
-                border border-neutral-200-on-light
-                text-neutral-800-on-light
-                hover:bg-neutral-200-on-light
+                flex-1 inline-flex items-center justify-center
+                h-12 px-4 rounded-lg text-md font-semibold
+                bg-surface-2 border border-pill-stroke text-text
+                hover:bg-surface-3
+                active:opacity-pressed-soft
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-background
                 transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed
               "
@@ -481,17 +538,21 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             <button
               type="submit"
               className="
-                flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold
-                bg-primary-900-on-light text-white
-                hover:bg-primary-800-on-light
+                flex-1 inline-flex items-center justify-center
+                h-12 px-4 rounded-lg text-md font-semibold
+                bg-primary text-text shadow-soft
+                hover:bg-primary-hover
+                active:opacity-pressed-strong
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-background
                 transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed
               "
               disabled={isSubmitting || loading}
             >
               {isSubmitting || loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                <span className="inline-flex items-center justify-center gap-2">
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
                   Salvando...
                 </span>
               ) : isEditing ? (

@@ -49,7 +49,7 @@ export function Navigation() {
           >
             {item.label}
             {item.badge && (
-              <Badge variant="soon">
+              <Badge variant="outline">
                 {item.badge}
               </Badge>
             )}

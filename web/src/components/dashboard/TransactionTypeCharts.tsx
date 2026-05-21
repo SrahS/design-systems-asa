@@ -3,7 +3,8 @@
 import { formatCurrency } from '@/lib/formatters';
 import { Transaction } from '@/types';
 import { groupByType } from '@/utils/transactions';
-import type { TooltipProps } from 'recharts';
+import { tokens } from '@/design-system/theme/tokens';
+import type { TooltipContentProps } from 'recharts';
 import {
   ResponsiveContainer,
   PieChart,
@@ -16,30 +17,51 @@ import {
   YAxis,
 } from 'recharts';
 
-const COLORS = ['#2D5FC5', '#F7965B', '#36CEC3'];
+/**
+ * Paleta dos charts derivada do tema (paridade com o app):
+ * - Depósito  → primary (roxo)
+ * - Saque     → cyan
+ * - Transferência → warning (amarelo/laranja)
+ *
+ * Mantemos um array indexado como fallback para tipos não mapeados.
+ */
+const TYPE_COLORS: Record<string, string> = {
+  Deposito: tokens.colors.primary,
+  Saque: tokens.colors.cyan,
+  Transferência: tokens.colors.warning,
+};
+
+const FALLBACK_COLORS = [
+  tokens.colors.primary,
+  tokens.colors.cyan,
+  tokens.colors.warning,
+];
+
+const colorForType = (type: string, index: number) =>
+  TYPE_COLORS[type] ?? FALLBACK_COLORS[index % FALLBACK_COLORS.length];
 
 type Props = { transactions: Transaction[] };
 
 
-function CurrencyTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function CurrencyTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
   if (!active || !payload?.length) return null;
 
   return (
     <div
       className="
-        rounded-xl border border-neutral-200/80 bg-white px-3 py-2
-        shadow-[0_10px_25px_rgba(15,23,42,0.10)]
+        rounded-md border border-pill-stroke bg-surface-3 px-3 py-2
+        shadow-lift
       "
     >
       {label ? (
-        <p className="text-xs font-medium text-neutral-700">{label}</p>
+        <p className="text-xs font-medium text-text-muted">{label}</p>
       ) : null}
 
       <div className="mt-1 space-y-1">
         {payload.map((p, i) => (
           <div key={i} className="flex items-center justify-between gap-4">
-            <span className="text-xs text-neutral-500">{p.name}</span>
-            <span className="text-xs font-semibold text-neutral-900">
+            <span className="text-xs text-text-subtle">{p.name}</span>
+            <span className="text-xs font-semibold text-text">
               {formatCurrency(p.value)}
             </span>
           </div>
@@ -49,25 +71,25 @@ function CurrencyTooltip({ active, payload, label }: TooltipProps<number, string
   );
 }
 
-function CountTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function CountTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
   if (!active || !payload?.length) return null;
 
   return (
     <div
       className="
-        rounded-xl border border-neutral-200/80 bg-white px-3 py-2
-        shadow-[0_10px_25px_rgba(15,23,42,0.10)]
+        rounded-md border border-pill-stroke bg-surface-3 px-3 py-2
+        shadow-lift
       "
     >
       {label ? (
-        <p className="text-xs font-medium text-neutral-700">{label}</p>
+        <p className="text-xs font-medium text-text-muted">{label}</p>
       ) : null}
 
       <div className="mt-1 space-y-1">
         {payload.map((p, i) => (
           <div key={i} className="flex items-center justify-between gap-4">
-            <span className="text-xs text-neutral-500">{p.name}</span>
-            <span className="text-xs font-semibold text-neutral-900">
+            <span className="text-xs text-text-subtle">{p.name}</span>
+            <span className="text-xs font-semibold text-text">
               {p.value}
             </span>
           </div>
@@ -85,15 +107,15 @@ export function TransactionTypeCharts({ transactions }: Props) {
 
       <div
         className="
-          rounded-2xl border border-neutral-200/70 bg-white
-          shadow-[0_6px_18px_rgba(15,23,42,0.06)]
+          rounded-xl border border-pill-stroke bg-surface-2
+          shadow-soft
         "
       >
         <div className="p-5">
-          <h3 className="text-sm font-semibold text-neutral-900">
+          <h3 className="text-md font-semibold text-text">
             Volume por tipo
           </h3>
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-text-muted">
             Soma absoluta por categoria
           </p>
         </div>
@@ -107,14 +129,18 @@ export function TransactionTypeCharts({ transactions }: Props) {
                   dataKey="totalAbs"
                   nameKey="type"
                   outerRadius={88}
-                  stroke="transparent"
+                  stroke={tokens.colors.surface}
+                  strokeWidth={2}
                 >
-                  {data.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  {data.map((entry, i) => (
+                    <Cell key={i} fill={colorForType(entry.type, i)} />
                   ))}
                 </Pie>
 
-                <Tooltip content={<CurrencyTooltip />} />
+                <Tooltip
+                  content={<CurrencyTooltip />}
+                  cursor={{ fill: tokens.colors.pill }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -123,15 +149,15 @@ export function TransactionTypeCharts({ transactions }: Props) {
 
       <div
         className="
-          rounded-2xl border border-neutral-200/70 bg-white
-          shadow-[0_6px_18px_rgba(15,23,42,0.06)]
+          rounded-xl border border-pill-stroke bg-surface-2
+          shadow-soft
         "
       >
         <div className="p-5">
-          <h3 className="text-sm font-semibold text-neutral-900">
+          <h3 className="text-md font-semibold text-text">
             Quantidade por tipo
           </h3>
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-text-muted">
             Número de transações
           </p>
         </div>
@@ -144,21 +170,27 @@ export function TransactionTypeCharts({ transactions }: Props) {
                   dataKey="type"
                   tickLine={false}
                   axisLine={false}
-                  className="text-xs"
+                  tick={{ fill: tokens.colors.textMuted, fontSize: 12 }}
                 />
                 <YAxis
                   allowDecimals={false}
                   tickLine={false}
                   axisLine={false}
-                  className="text-xs"
+                  tick={{ fill: tokens.colors.textSubtle, fontSize: 12 }}
                 />
-                <Tooltip content={<CountTooltip />} />
+                <Tooltip
+                  content={<CountTooltip />}
+                  cursor={{ fill: tokens.colors.pill }}
+                />
 
                 <Bar
                   dataKey="count"
-                  fill="#2D5FC5"
                   radius={3}
-                />
+                >
+                  {data.map((entry, i) => (
+                    <Cell key={i} fill={colorForType(entry.type, i)} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
