@@ -86,26 +86,24 @@ export function TransactionDetailsModal({
   const getTypeClasses = (type: transactionType) => {
     switch (type) {
       case transactionTypes.Deposit:
-        return "bg-semantic-success-100-on-light text-semantic-success-900-on-light";
+        return "bg-success/15 text-success border border-success/30";
       case transactionTypes.Withdrawal:
       case transactionTypes.Transfer:
-        return "bg-semantic-error-100-on-light text-semantic-error-900-on-light";
+        return "bg-danger/15 text-danger border border-danger/30";
       default:
-        return "bg-primary-100-on-light text-primary-1200-on-light";
+        return "bg-pill text-text border border-pill-stroke";
     }
   };
 
   const amountColorClass =
-    transaction.amount >= 0
-      ? "text-semantic-success-600-on-light"
-      : "text-semantic-error-600-on-light";
+    transaction.amount >= 0 ? "text-success" : "text-danger";
 
   return (
     <div
       className="
         fixed inset-0 z-50
         flex items-center justify-center
-        bg-black/50 backdrop-blur-sm
+        bg-black/60 backdrop-blur-sm
         p-4
       "
       role="dialog"
@@ -116,17 +114,17 @@ export function TransactionDetailsModal({
       <div
         className="
           w-full max-w-lg
-          rounded-2xl bg-white
-          border border-neutral-200/70
-          shadow-[0_18px_55px_rgba(15,23,42,0.18)]
+          rounded-xl bg-surface
+          border border-stroke
+          shadow-lift
         "
       >
-        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-200/70">
+        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-stroke">
           <div className="min-w-0">
-            <h2 className="text-lg font-bold text-neutral-1200-on-light">
+            <h2 className="text-lg font-bold text-text tracking-tight">
               Detalhes da Transação
             </h2>
-            <p className="mt-1 text-xs text-neutral-600-on-light">
+            <p className="mt-1 text-xs font-medium text-text-muted">
               Confira as informações completas desta movimentação.
             </p>
           </div>
@@ -134,10 +132,13 @@ export function TransactionDetailsModal({
           <button
             onClick={onClose}
             className="
-              inline-flex items-center justify-center
-              h-9 w-9 rounded-lg
-              text-neutral-600-on-light
-              hover:bg-neutral-200-on-light hover:text-neutral-900-on-light
+              inline-flex items-center justify-center shrink-0
+              h-9 w-9 rounded-pill
+              bg-pill border border-stroke text-off-white
+              hover:bg-surface-3
+              active:opacity-pressed-soft
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+              focus-visible:ring-offset-2 focus-visible:ring-offset-background
               transition-colors
             "
             aria-label="Fechar"
@@ -147,12 +148,12 @@ export function TransactionDetailsModal({
           </button>
         </div>
 
-        <div className="px-6 py-5 space-y-4">
+        <div className="px-6 py-5 space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-neutral-900-on-light">Tipo</p>
+            <p className="text-sm font-medium text-text-muted">Tipo</p>
             <span
               className={cn(
-                "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-family-sans",
+                "inline-flex items-center gap-1 rounded-pill px-3 py-1 text-xs font-semibold leading-none",
                 getTypeClasses(transaction.type)
               )}
             >
@@ -160,9 +161,14 @@ export function TransactionDetailsModal({
             </span>
           </div>
 
-          <div className="rounded-xl border border-neutral-200/70 bg-neutral-50/60 p-4">
-            <p className="text-xs text-neutral-600-on-light">Valor</p>
-            <p className={cn("mt-1 text-2xl font-bold", amountColorClass)}>
+          <div className="rounded-md border border-pill-stroke bg-surface-2 p-5 shadow-soft text-center">
+            <p className="text-xs font-medium text-text-muted">Valor</p>
+            <p
+              className={cn(
+                "mt-1 text-xxl font-bold tracking-tight",
+                amountColorClass
+              )}
+            >
               {transaction.amount >= 0 ? "+" : "-"}R$
               {Math.abs(transaction.amount).toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
@@ -170,54 +176,58 @@ export function TransactionDetailsModal({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-1">
-              <p className="text-xs text-neutral-600-on-light">Descrição</p>
-              <p className="text-sm text-neutral-1000-on-light font-family-sans">
+          <div className="grid grid-cols-1 gap-3">
+            <div className="rounded-md border border-pill-stroke bg-surface-2 p-4">
+              <p className="text-xs font-medium text-text-muted">Descrição</p>
+              <p className="mt-2 text-md font-semibold text-text">
                 {transaction.name}
               </p>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-xs text-neutral-600-on-light">Data</p>
-              <p className="text-sm text-neutral-1000-on-light font-family-sans">
+            <div className="rounded-md border border-pill-stroke bg-surface-2 p-4">
+              <p className="text-xs font-medium text-text-muted">Data</p>
+              <p className="mt-2 text-md font-semibold text-text">
                 {formattedDate}
               </p>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-xs text-neutral-600-on-light">Referência</p>
-              <p className="text-sm font-mono text-neutral-1000-on-light break-all">
+            <div className="rounded-md border border-pill-stroke bg-surface-2 p-4">
+              <p className="text-xs font-medium text-text-muted">Referência</p>
+              <p className="mt-2 text-sm font-mono text-text break-all">
                 {transaction.reference}
               </p>
             </div>
 
             {transaction.description ? (
-              <div className="space-y-1">
-                <p className="text-xs text-neutral-600-on-light">Detalhes adicionais</p>
-                <p className="text-sm text-neutral-1000-on-light font-family-sans">
+              <div className="rounded-md border border-pill-stroke bg-surface-2 p-4">
+                <p className="text-xs font-medium text-text-muted">
+                  Detalhes adicionais
+                </p>
+                <p className="mt-2 text-md font-semibold text-text">
                   {transaction.description}
                 </p>
               </div>
             ) : null}
 
-            <div className="space-y-2">
-              <p className="text-xs text-neutral-600-on-light">Anexos</p>
+            <div className="rounded-md border border-pill-stroke bg-surface-2 p-4">
+              <p className="text-xs font-medium text-text-muted">Anexos</p>
 
               {attachmentsLoading ? (
-                <p className="text-sm text-neutral-700-on-light">Carregando anexos...</p>
-              ) : (transaction.attachments?.length ? (
-                <div className="space-y-2">
+                <p className="mt-3 text-sm font-medium text-text-muted">
+                  Carregando anexos...
+                </p>
+              ) : transaction.attachments?.length ? (
+                <div className="mt-3 space-y-2">
                   {attachmentPreviews.map((a) => (
                     <div
                       key={a.id}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200/70 bg-neutral-50/60 p-3"
+                      className="flex items-center justify-between gap-3 rounded-md border border-stroke bg-pill p-3"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-neutral-1000-on-light truncate">
+                        <p className="text-sm font-medium text-text truncate">
                           {a.name}
                         </p>
-                        <p className="text-[11px] text-neutral-600-on-light">
+                        <p className="text-[11px] font-medium text-text-subtle">
                           {Math.round(a.size / 1024)} KB
                         </p>
                       </div>
@@ -227,14 +237,14 @@ export function TransactionDetailsModal({
                           <img
                             src={a.url}
                             alt={a.name}
-                            className="h-12 w-12 rounded-lg object-cover border border-neutral-200/70"
+                            className="h-12 w-12 rounded-md object-cover border border-stroke"
                           />
                         </a>
                       ) : (
                         <a
                           href={a.url}
                           download={a.name}
-                          className="text-sm text-primary-900-on-light hover:underline"
+                          className="text-sm font-semibold text-primary hover:text-primary-hover hover:underline underline-offset-4 transition-colors"
                         >
                           Baixar
                         </a>
@@ -243,8 +253,10 @@ export function TransactionDetailsModal({
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-neutral-700-on-light">Nenhum anexo.</p>
-              ))}
+                <p className="mt-3 text-sm font-medium text-text-muted">
+                  Nenhum anexo.
+                </p>
+              )}
             </div>
           </div>
 
@@ -252,9 +264,14 @@ export function TransactionDetailsModal({
             <button
               onClick={onClose}
               className="
-                w-full px-4 py-2.5 rounded-lg
-                bg-primary-900-on-light text-white
-                hover:bg-primary-800-on-light
+                w-full inline-flex items-center justify-center
+                h-12 px-6 rounded-lg
+                bg-primary text-text text-md font-semibold
+                shadow-soft
+                hover:bg-primary-hover
+                active:opacity-pressed-strong
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-background
                 transition-colors
               "
               type="button"
