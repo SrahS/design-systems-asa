@@ -193,7 +193,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     try {
       const newAttachments: TransactionAttachment[] = [];
 
-      // Salvar novos anexos
       for (const file of selectedFiles) {
         try {
           const id = crypto.randomUUID();
@@ -212,7 +211,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
       const amountNum = Number(formData.amount.trim().replace(",", "."));
       const amount = formData.type === transactionTypes.Deposit ? amountNum : -amountNum;
 
-      // Usar dispatch async para comunicar com servidor
       if (transaction) {
         await updateTransaction(transaction.id, {
           name: formData.name,

@@ -32,7 +32,6 @@ export function TransactionList({
               transition-colors duration-150 hover:bg-gray-50
             "
           >
-            {/* Bloco de Informação Central */}
             <div className="flex flex-1 items-center gap-4 min-w-0">
               <div
                 className="
@@ -55,7 +54,6 @@ export function TransactionList({
               </div>
             </div>
 
-            {/* Bloco de Valores e Ações */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
               <div className="text-left sm:text-right w-full sm:w-auto">
                 <p
@@ -70,7 +68,6 @@ export function TransactionList({
                 <p className="mt-1 text-sm font-medium text-gray-500">{transaction.type}</p>
               </div>
 
-              {/* Botões de Ação Acessíveis (WCAG > 48px) */}
               <div className="flex gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                 <button
                   onClick={() => onViewDetails?.(transaction)}

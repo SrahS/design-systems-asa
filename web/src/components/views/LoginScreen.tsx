@@ -22,7 +22,6 @@ export const LoginScreen = () => {
         <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 sm:p-8">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-8">
 
-                {/* Cabeçalho */}
                 <div className="flex flex-col items-center text-center space-y-4">
                     <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center">
                         <Wallet className="h-8 w-8 text-blue-600" aria-hidden="true" />
@@ -33,11 +32,9 @@ export const LoginScreen = () => {
                     </p>
                 </div>
 
-                {/* Formulário */}
                 <form onSubmit={onSubmit} className="space-y-6">
                     <div className="space-y-4">
 
-                        {/* Campo de E-mail */}
                         <div className="relative">
                             <label htmlFor="email" className="sr-only">E-mail</label>
                             <input
@@ -56,7 +53,6 @@ export const LoginScreen = () => {
                             </div>
                         </div>
 
-                        {/* Campo de Senha */}
                         <div className="relative">
                             <label htmlFor="password" className="sr-only">Senha</label>
                             <input
@@ -85,14 +81,12 @@ export const LoginScreen = () => {
                         </div>
                     </div>
 
-                    {/* Mensagem de Erro */}
                     {error ? (
                         <div className="text-red-600 text-sm font-medium text-center" role="alert">
                             {error}
                         </div>
                     ) : null}
 
-                    {/* Botão de Ação */}
                     <button
                         type="submit"
                         disabled={isSubmitting}
@@ -103,7 +97,6 @@ export const LoginScreen = () => {
                     </button>
                 </form>
 
-                {/* Rodapé e Links */}
                 <div className="text-center">
                     <p className="text-sm text-gray-500 leading-relaxed">
                         Ao continuar, você aceita nossa{" "}

@@ -244,7 +244,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   if (!isOpen) return null;
   const isEditing = !!transaction;
 
-  // Classes de Estilo Acessíveis
   const labelClass = "block text-base font-bold text-gray-700 mb-2";
   const baseInput = "w-full rounded-xl border-2 bg-white text-gray-900 text-lg px-4 py-4 outline-none transition-colors placeholder:text-gray-400 focus:ring-4 focus:ring-primary/20 focus:border-primary disabled:opacity-50 disabled:bg-gray-100";
 
@@ -264,7 +263,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     >
       <div className="flex flex-col w-full max-w-xl max-h-[90vh] rounded-2xl bg-gray-50 shadow-2xl overflow-hidden">
 
-        {/* Cabeçalho */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-white shrink-0">
           <div>
             <h2 id="modal-form-title" className="text-2xl font-bold text-gray-900">
@@ -285,10 +283,8 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
           </button>
         </div>
 
-        {/* Formulário Completo */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
 
-          {/* Área com Scroll para os campos */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
             {displayError && (
@@ -396,7 +392,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 />
               </div>
 
-              {/* Seção de Anexos */}
               <div className="pt-2 border-t border-gray-100">
                 <label className={labelClass} htmlFor="transaction-files">Anexar Comprovantes ou Recibos (opcional)</label>
 
@@ -420,11 +415,9 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                   </div>
                 </div>
 
-                {/* Lista de Anexos (Novos e Existentes) */}
                 {(attachmentMeta.length > 0 || selectedFiles.length > 0) && (
                   <div className="mt-4 space-y-3">
 
-                    {/* Anexos já salvos */}
                     {attachmentMeta.map((a) => (
                       <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-4">
                         <div className="min-w-0">
@@ -446,7 +439,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                       </div>
                     ))}
 
-                    {/* Novos anexos selecionados */}
                     {selectedFiles.map((f) => {
                       const key = fileKey(f);
                       return (
@@ -476,7 +468,6 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             </div>
           </div>
 
-          {/* Ações Fixas no Rodapé */}
           <div className="px-6 py-5 bg-white border-t border-gray-200 flex flex-col sm:flex-row gap-4 shrink-0">
             <button
               type="button"

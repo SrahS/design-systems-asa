@@ -2,9 +2,10 @@
 
 import { Header } from '@/components/layout/Header';
 import { DashboardView } from '@/components/views/DashboardView';
-import { TransactionsView } from '@/components/views/TransactionView';
+import { AccessibilityPanel } from '@/components/views/AccessibilityPanel';
 import { useTab } from '@/contexts/TabContext';
 import { TabConst } from '@/types/tabTypes';
+import { TransactionsView } from '@/components/views/TransactionView';
 
 export default function Home() {
   const { activeTab } = useTab();
@@ -15,22 +16,23 @@ export default function Home() {
         return <DashboardView />;
       case TabConst.Transactions:
         return <TransactionsView />;
+      case 'Configurações':
+        return <AccessibilityPanel />;
       default:
         return <DashboardView />;
     }
   }
 
   return (
-    <div className="min-h-screen bg-primary-100-on-light">
+    <div className="min-h-screen bg-neutral-50-on-light">
       <Header
-        accountName='Bem vindo, Alisson'
-        accountNumber='**** 4892'
-        status='Ativo'
+        accountName="Sarah Araújo"
+        accountNumber="12345-6"
+        status="Ativa"
       />
-
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <div className="pt-8">
         {renderContent()}
-      </main>
+      </div>
     </div>
   );
 }
