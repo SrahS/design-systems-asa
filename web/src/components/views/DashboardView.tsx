@@ -1,197 +1,66 @@
 "use client";
 
-import { BalanceCard } from '@/components/dashboard/BalanceCard';
-import { MetricCard } from '@/components/dashboard/MetricCard';
-import { ActionCard } from '@/components/dashboard/ActionCard';
-import { TransactionList } from '@/components/dashboard/TransactionList';
-import { Plus, List } from 'lucide-react';
-import { useTransactions } from '@/store/hooks';
-import { useTab } from '@/contexts/TabContext';
-import { useState, useEffect } from 'react';
-import { TransactionModal } from '@/components/modals/TransactionModal';
-import { TransactionDetailsModal } from '@/components/modals/TransactionDetailsModal';
-import { TransactionTypeCharts } from '@/components/dashboard/TransactionTypeCharts';
-import { Transaction } from '@/types';
-import { mockAccount } from '@/data/mockData';
+import { ArrowDownToLine, ArrowUpFromLine, Receipt } from "lucide-react";
+import { BalanceCard } from "../dashboard/BalanceCard";
+import { MetricCard } from "../dashboard/MetricCard";
+import { ActionCard } from "../dashboard/ActionCard";
 
+export const DashboardView = () => {
+    const accountMock = {
+        name: "Conta Principal",
+        status: "Ativa",
+        balance: 15420.50,
+        routing: "0001",
+        number: "12345-6"
+    };
 
-export function DashboardView() {
-  const { 
-    transactions, 
-    balance, 
-    income, 
-    expenses, 
-    deleteTransaction,
-    fetchTransactions,
-    loading,
-    error 
-  } = useTransactions();
-  const { setActiveTab } = useTab();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const metricsMock = [
+        { label: "Entradas deste mês", amount: 5200.00, type: "positive" as const },
+        { label: "Saídas deste mês", amount: -2150.00, type: "negative" as const }
+    ];
 
-  // Buscar transações ao montar o componente
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
-  const recentTransactions = transactions.slice(0, 3);
-
-  const dynamicAccount = {
-    ...mockAccount,
-    balance,
-  };
-
-  const handleEdit = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsModalOpen(true);
-  };
-
-  const handleViewDetails = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsDetailsModalOpen(true);
-  };
-
-  const handleNewTransaction = () => {
-    setSelectedTransaction(null);
-    setIsModalOpen(true);
-  };
-
-  const handleViewAllTransactions = () => {
-    setActiveTab('Transações');
-  };
-
-  // Handler para deletar com confirmação
-  const handleDeleteTransaction = async (id: number) => {
-    if (confirm('Tem certeza que deseja deletar esta transação?')) {
-      await deleteTransaction(id);
-    }
-  };
-
-  const mockMetrics = {
-    income: {
-      label: 'Renda deste mês',
-      amount: income,
-      type: 'positive' as const,
-    },
-    expenses: {
-      label: 'Despesas deste mês',
-      amount: -expenses,
-      type: 'negative' as const,
-    },
-    netChange: {
-      label: 'Mudança Líquida',
-      amount: balance,
-      type: 'neutral' as const,
-    },
-  };
-
-  // Mostrar erro se houver
-  if (error) {
     return (
-      <div className="flex items-center justify-center p-6 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-700">
-          Erro ao carregar transações: {error}
-        </p>
-      </div>
+        <main className="p-4 sm:p-6 lg:p-8 space-y-10 max-w-7xl mx-auto focus:outline-none" tabIndex={-1}>
+
+            <h2 className="sr-only">Resumo da sua conta</h2>
+
+            <section className="grid grid-cols-1 lg:grid-cols-3 gap-6" aria-label="Informações de Saldo">
+                <div className="lg:col-span-1">
+                    <BalanceCard account={accountMock} />
+                </div>
+                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {metricsMock.map((metric, idx) => (
+                        <MetricCard key={idx} metric={metric} />
+                    ))}
+                </div>
+            </section>
+
+            <section aria-labelledby="quick-actions-title">
+                <h3 id="quick-actions-title" className="text-3xl font-bold text-gray-900 mb-6">
+                    O que você deseja fazer?
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <ActionCard
+                        icon={<ArrowDownToLine className="w-8 h-8" aria-hidden="true" />}
+                        title="Receber Dinheiro"
+                        description="Gerar um boleto ou chave Pix para receber."
+                        onClick={() => console.log("Ação: Receber")}
+                    />
+                    <ActionCard
+                        icon={<ArrowUpFromLine className="w-8 h-8" aria-hidden="true" />}
+                        title="Transferir"
+                        description="Fazer um Pix ou TED para outra pessoa."
+                        onClick={() => console.log("Ação: Transferir")}
+                    />
+                    <ActionCard
+                        icon={<Receipt className="w-8 h-8" aria-hidden="true" />}
+                        title="Pagar Contas"
+                        description="Pagar boletos de água, luz, internet, etc."
+                        onClick={() => console.log("Ação: Pagar")}
+                    />
+                </div>
+            </section>
+
+        </main>
     );
-  }
-
-  return (
-    <>
-      <div className="space-y-6">
-        {/* Loading skeleton ou conteúdo */}
-        {loading && transactions.length === 0 ? (
-          <div className="flex items-center justify-center p-12">
-            <p className="text-neutral-500">Carregando transações...</p>
-          </div>
-        ) : (
-          <>
-            <TransactionTypeCharts transactions={transactions} />
-            <BalanceCard account={dynamicAccount} />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <MetricCard metric={mockMetrics.income} />
-              <MetricCard metric={mockMetrics.expenses} />
-              <MetricCard metric={mockMetrics.netChange} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ActionCard
-                icon={
-                  <Plus 
-                    className="
-                      w-6 h-6 
-                      text-primary-800-on-light 
-                    " 
-                  />
-                }
-                title="Nova Transação"
-                description="Adicionar um depósito, saque ou transferência"
-                onClick={handleNewTransaction}
-              />
-              <ActionCard
-                icon={
-                  <List 
-                    className="
-                      w-6 h-6 
-                      text-primary-800-on-light 
-                    " 
-                  />
-                }
-                title="Ver Todas as Transações"
-                description="Veja seu histórico completo de transações"
-                onClick={handleViewAllTransactions}
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="
-                  text-xl font-bold 
-                  text-neutral-1000-on-light
-                ">
-                  Atividade Recente
-                </h2>
-                <button 
-                  onClick={handleViewAllTransactions}
-                  className="
-                    text-sm font-medium transition-colors
-                    text-primary-900-on-light 
-                    hover:text-primary-800-on-light 
-                  "
-                >
-                  Ver Todas
-                </button>
-              </div>
-              {recentTransactions.length > 0 ? (
-                <TransactionList
-                  transactions={recentTransactions}
-                  onEdit={handleEdit}
-                  onDelete={handleDeleteTransaction}
-                  onViewDetails={handleViewDetails}
-                />
-              ) : (
-                <p className="text-center text-neutral-500 py-8">
-                  Nenhuma transação encontrada
-                </p>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
-      <TransactionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        transaction={selectedTransaction}
-      />
-      <TransactionDetailsModal
-        isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
-        transaction={selectedTransaction}
-      />
-    </>
-  );
-}
+};

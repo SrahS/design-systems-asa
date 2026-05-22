@@ -24,10 +24,10 @@ export function Navigation() {
   const borderActiveClass = 'border-color-primary-900-on-light';
 
   return (
-    <nav className="
-      flex gap-6 
-      border-color-neutral-200-on-light
-    ">
+    <nav 
+      aria-label="Navegação principal"
+      className="flex gap-4 sm:gap-6 border-color-neutral-200-on-light overflow-x-auto"
+    >
       {navItems.map((item) => {
         const isActive = activeTab === item.label;
         const isDisabled = item.badge === 'Em breve';
@@ -37,19 +37,22 @@ export function Navigation() {
             key={item.label}
             onClick={() => setActiveTab(item.label)}
             disabled={isDisabled}
+            aria-current={isActive ? 'page' : undefined}
             className={`
-              px-4 py-3 text-sm font-family-sans border-b-2 transition-colors flex items-center gap-2 
+              min-h-[48px] px-4 py-3 text-base font-medium font-family-sans border-b-2 transition-all 
+              flex items-center gap-2 whitespace-nowrap
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
               ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
               ${
                 isActive
-                  ? `border-b-2 ${borderActiveClass} ${textActiveClass}`
+                  ? `${borderActiveClass} ${textActiveClass}`
                   : `border-transparent ${textNormalClass} ${textHoverClass}`
               }
             `}
           >
             {item.label}
             {item.badge && (
-              <Badge variant="outline">
+              <Badge variant="outline" aria-hidden="true">
                 {item.badge}
               </Badge>
             )}

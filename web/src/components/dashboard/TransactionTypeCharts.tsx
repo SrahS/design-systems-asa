@@ -1,201 +1,120 @@
-'use client';
+"use client";
 
-import { formatCurrency } from '@/lib/formatters';
+import { Trash2, Edit, Eye } from 'lucide-react';
 import { Transaction } from '@/types';
-import { groupByType } from '@/utils/transactions';
-import { tokens } from '@/design-system/theme/tokens';
-import type { TooltipContentProps } from 'recharts';
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Tooltip,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-} from 'recharts';
 
-/**
- * Paleta dos charts derivada do tema (paridade com o app):
- * - Depósito  → primary (roxo)
- * - Saque     → cyan
- * - Transferência → warning (amarelo/laranja)
- *
- * Mantemos um array indexado como fallback para tipos não mapeados.
- */
-const TYPE_COLORS: Record<string, string> = {
-  Deposito: tokens.colors.primary,
-  Saque: tokens.colors.cyan,
-  Transferência: tokens.colors.warning,
-};
-
-const FALLBACK_COLORS = [
-  tokens.colors.primary,
-  tokens.colors.cyan,
-  tokens.colors.warning,
-];
-
-const colorForType = (type: string, index: number) =>
-  TYPE_COLORS[type] ?? FALLBACK_COLORS[index % FALLBACK_COLORS.length];
-
-type Props = { transactions: Transaction[] };
-
-
-function CurrencyTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
-  if (!active || !payload?.length) return null;
-
-  return (
-    <div
-      className="
-        rounded-md border border-pill-stroke bg-surface-3 px-3 py-2
-        shadow-lift
-      "
-    >
-      {label ? (
-        <p className="text-xs font-medium text-text-muted">{label}</p>
-      ) : null}
-
-      <div className="mt-1 space-y-1">
-        {payload.map((p, i) => (
-          <div key={i} className="flex items-center justify-between gap-4">
-            <span className="text-xs text-text-subtle">{p.name}</span>
-            <span className="text-xs font-semibold text-text">
-              {formatCurrency(p.value)}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+interface TransactionListProps {
+  transactions: Transaction[];
+  onEdit?: (transaction: Transaction) => void;
+  onDelete?: (id: number) => void;
+  onViewDetails?: (transaction: Transaction) => void;
 }
 
-function CountTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {
-  if (!active || !payload?.length) return null;
-
+export function TransactionList({
+  transactions,
+  onEdit,
+  onDelete,
+  onViewDetails,
+}: TransactionListProps) {
   return (
-    <div
-      className="
-        rounded-md border border-pill-stroke bg-surface-3 px-3 py-2
-        shadow-lift
-      "
-    >
-      {label ? (
-        <p className="text-xs font-medium text-text-muted">{label}</p>
-      ) : null}
-
-      <div className="mt-1 space-y-1">
-        {payload.map((p, i) => (
-          <div key={i} className="flex items-center justify-between gap-4">
-            <span className="text-xs text-text-subtle">{p.name}</span>
-            <span className="text-xs font-semibold text-text">
-              {p.value}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function TransactionTypeCharts({ transactions }: Props) {
-  const data = groupByType(transactions);
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <div
-        className="
-          rounded-xl border border-pill-stroke bg-surface-2
-          shadow-soft
-        "
-      >
-        <div className="p-5">
-          <h3 className="text-md font-semibold text-text">
-            Volume por tipo
-          </h3>
-          <p className="mt-1 text-xs text-text-muted">
-            Soma absoluta por categoria
-          </p>
+    <div className="space-y-4">
+      {transactions.length === 0 ? (
+        <div className="rounded-xl border-2 border-dashed border-gray-300 bg-surface-2 p-8 text-center">
+          <p className="text-lg font-medium text-gray-600">Nenhuma transação encontrada neste período.</p>
         </div>
+      ) : (
+        transactions.map((transaction) => (
+          <div
+            key={transaction.id}
+            className="
+              flex flex-col sm:flex-row sm:items-center justify-between gap-4
+              rounded-xl border border-gray-200 bg-white p-5 shadow-sm
+              transition-colors duration-150 hover:bg-gray-50
+            "
+          >
+            {/* Bloco de Informação Central */}
+            <div className="flex flex-1 items-center gap-4 min-w-0">
+              <div
+                className="
+                  inline-flex h-12 w-12 shrink-0 items-center justify-center
+                  rounded-full bg-blue-100 text-blue-700
+                "
+                aria-hidden="true"
+              >
+                <span className="text-xl font-bold">
+                  {transaction.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-lg font-bold text-gray-900">
+                  {transaction.name}
+                </p>
+                <p className="mt-1 truncate text-base text-gray-600">
+                  {transaction.date} • {transaction.reference}
+                </p>
+              </div>
+            </div>
 
-        <div className="px-5 pb-5">
-          <div className="h-[240px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={data}
-                  dataKey="totalAbs"
-                  nameKey="type"
-                  outerRadius={88}
-                  stroke={tokens.colors.surface}
-                  strokeWidth={2}
+            {/* Bloco de Valores e Ações */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+              <div className="text-left sm:text-right w-full sm:w-auto">
+                <p
+                  className={`text-xl font-bold ${transaction.amount >= 0 ? 'text-green-700' : 'text-red-700'
+                    }`}
                 >
-                  {data.map((entry, i) => (
-                    <Cell key={i} fill={colorForType(entry.type, i)} />
-                  ))}
-                </Pie>
+                  {transaction.amount >= 0 ? '+' : '-'} R$
+                  {Math.abs(transaction.amount).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                  })}
+                </p>
+                <p className="mt-1 text-sm font-medium text-gray-500">{transaction.type}</p>
+              </div>
 
-                <Tooltip
-                  content={<CurrencyTooltip />}
-                  cursor={{ fill: tokens.colors.pill }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="
-          rounded-xl border border-pill-stroke bg-surface-2
-          shadow-soft
-        "
-      >
-        <div className="p-5">
-          <h3 className="text-md font-semibold text-text">
-            Quantidade por tipo
-          </h3>
-          <p className="mt-1 text-xs text-text-muted">
-            Número de transações
-          </p>
-        </div>
-
-        <div className="px-5 pb-5">
-          <div className="h-[240px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} barCategoryGap={18}>
-                <XAxis
-                  dataKey="type"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: tokens.colors.textMuted, fontSize: 12 }}
-                />
-                <YAxis
-                  allowDecimals={false}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: tokens.colors.textSubtle, fontSize: 12 }}
-                />
-                <Tooltip
-                  content={<CountTooltip />}
-                  cursor={{ fill: tokens.colors.pill }}
-                />
-
-                <Bar
-                  dataKey="count"
-                  radius={3}
+              {/* Botões de Ação Acessíveis (WCAG > 48px) */}
+              <div className="flex gap-3 w-full sm:w-auto mt-2 sm:mt-0">
+                <button
+                  onClick={() => onViewDetails?.(transaction)}
+                  className="
+                    flex-1 sm:flex-none inline-flex min-h-[48px] px-4 items-center justify-center gap-2
+                    rounded-lg border border-gray-300 bg-white text-blue-700 font-medium text-base
+                    transition-colors hover:bg-blue-50 focus:ring-4 focus:ring-blue-200
+                  "
+                  title="Ver detalhes da transação"
                 >
-                  {data.map((entry, i) => (
-                    <Cell key={i} fill={colorForType(entry.type, i)} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <Eye className="h-5 w-5" />
+                  <span className="sm:hidden lg:inline">Detalhes</span>
+                </button>
+
+                <button
+                  onClick={() => onEdit?.(transaction)}
+                  className="
+                    flex-1 sm:flex-none inline-flex min-h-[48px] px-4 items-center justify-center gap-2
+                    rounded-lg border border-gray-300 bg-white text-gray-700 font-medium text-base
+                    transition-colors hover:bg-gray-100 focus:ring-4 focus:ring-gray-200
+                  "
+                  title="Editar transação"
+                >
+                  <Edit className="h-5 w-5" />
+                  <span className="sm:hidden lg:inline">Editar</span>
+                </button>
+
+                <button
+                  onClick={() => onDelete?.(transaction.id)}
+                  className="
+                    flex-1 sm:flex-none inline-flex min-h-[48px] px-4 items-center justify-center gap-2
+                    rounded-lg border border-red-200 bg-red-50 text-red-700 font-medium text-base
+                    transition-colors hover:bg-red-100 focus:ring-4 focus:ring-red-200
+                  "
+                  title="Excluir transação"
+                >
+                  <Trash2 className="h-5 w-5" />
+                  <span className="sm:hidden lg:inline">Excluir</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        ))
+      )}
     </div>
   );
 }
