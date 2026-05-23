@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { attachmentsTransactionService } from "@/infrastructure/firebase";
-import { toTransactionAttachment } from "@/features/transactions/presenters/transactionPresenters";
-import { useTransactionAttachments } from "@/hooks/domains";
+import {
+  toTransactionAttachment,
+  toTransactionListItem
+} from "@/features/transactions/presenters/transactionPresenters";
+import { useTransactionRelations, useUser } from "@/hooks/domains";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { TransactionHeader } from "../../components/TransactionHeader";
 import { TransactionSummaryCard } from "../../components/TransactionSummaryCard";
@@ -11,9 +14,9 @@ import { DetailInfoCard } from "../../components/DetailInfoCard";
 import { AttachmentListSection } from "../../components/AttachmentListSection";
 import { TransactionActionButtons } from "../../components/TransactionActionButtons";
 import { useExcludeTransaction } from "../../hooks/useExcludeTransaction";
-import type { TransactionListItem } from "../../types/TransactionListItem";
 import { formatCurrentDatePtBr } from "@/utils/format";
 import { parseDateTime } from "@/utils/formatDate";
+import { parsePositiveIntRouteParam } from "@/utils/routeParams";
 import styles from "./styles";
 
 export const TransactionDetailsScreen = () => {
@@ -22,32 +25,55 @@ export const TransactionDetailsScreen = () => {
   const [isRemovingAttachment, setIsRemovingAttachment] = useState(false);
 
   const params = useLocalSearchParams<{
-    transaction?: string;
+    id?: string;
+    id_users?: string;
   }>();
-
-  const transaction = useMemo<TransactionListItem | null>(() => {
-    if (!params.transaction) return null;
-    try {
-      return JSON.parse(params.transaction) as TransactionListItem;
-    } catch {
-      return null;
-    }
-  }, [params.transaction]);
+  const transactionId = parsePositiveIntRouteParam(params.id);
+  const routeUserId = parsePositiveIntRouteParam(params.id_users);
+  const {
+    data: { activeUserId },
+    loading: userLoading
+  } = useUser();
+  const userId = routeUserId ?? activeUserId;
 
   const {
-    data: { getByTransactionId },
-    loading: attachmentsLoading,
-    error: attachmentsError
-  } = useTransactionAttachments(transaction?.id_users ?? null);
+    data: relationsData,
+    loading: relationsLoading,
+    error: relationsError
+  } = useTransactionRelations(transactionId, userId);
+
+  const transaction = useMemo(() => {
+    if (relationsData == null) {
+      return null;
+    }
+
+    return toTransactionListItem(
+      relationsData.transaction,
+      relationsData.category,
+      parseDateTime(relationsData.transaction.occured_at)
+    );
+  }, [relationsData]);
 
   const attachments = useMemo(() => {
-    if (transaction == null) return [];
-    return getByTransactionId(transaction.id_transactions).map(toTransactionAttachment);
-  }, [getByTransactionId, transaction]);
+    return relationsData?.attachments.map(toTransactionAttachment) ?? [];
+  }, [relationsData]);
 
   useEffect(() => {
-    if (!transaction) router.replace("/transactions");
-  }, [ transaction, router]);
+    const hasInvalidParams =
+      params.id == null ||
+      transactionId == null ||
+      (params.id_users != null && routeUserId == null);
+
+    if (hasInvalidParams) {
+      router.replace("/transactions");
+    }
+  }, [params.id, params.id_users, router, routeUserId, transactionId]);
+
+  useEffect(() => {
+    if (!userLoading && !relationsLoading && relationsData == null) {
+      router.replace("/transactions");
+    }
+  }, [relationsData, relationsLoading, router, userLoading]);
 
   const handleRemoveAttachment = useCallback(
     async (attachmentId: string) => {
@@ -74,13 +100,12 @@ export const TransactionDetailsScreen = () => {
   if (!transaction) return null;
 
   const handleEdit = () => {
-    const parsedTransaction = {
-      id_transactions: transaction?.id_transactions,
-      id_users: transaction?.id_users
-    }
     router.push({
       pathname: "/transactions/create",
-      params: {parsedTransaction: JSON.stringify(parsedTransaction)},
+      params: {
+        id_transactions: String(transaction.id_transactions),
+        id_users: String(transaction.id_users),
+      },
     });
   };
   const handleDelete = () => {
@@ -134,8 +159,8 @@ export const TransactionDetailsScreen = () => {
 
           <AttachmentListSection
             attachments={attachments}
-            loading={attachmentsLoading}
-            errorMessage={attachmentsError?.message ?? null}
+            loading={relationsLoading}
+            errorMessage={relationsError?.message ?? null}
             onRemoveAttachment={handleRemoveAttachment}
           />
 

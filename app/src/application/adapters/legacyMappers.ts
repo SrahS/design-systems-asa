@@ -92,7 +92,6 @@ export const toLegacyUser = (user: DomainUser): User => ({
   id_users: user.id,
   name: user.name,
   login: user.login,
-  password: "",
   budget: user.budget,
   created_at: user.createdAt,
   updated_at: user.updatedAt,

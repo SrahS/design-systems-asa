@@ -10,7 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useTransactionRelations } from "@/hooks/domains";
+import { useTransactionRelations, useUser } from "@/hooks/domains";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { theme } from "@/theme";
 import { TransactionHeader } from "../../components/TransactionHeader";
@@ -27,6 +27,7 @@ import {
   parseMoneyInputToMinorUnits
 } from "@/utils/format";
 import { occurredAtToDdMmYyyy } from "@/utils/formatDate";
+import { parsePositiveIntRouteParam } from "@/utils/routeParams";
 import styles from "./styles";
 import { categoryOptions } from "@/constants/categoryOptions";
 
@@ -47,12 +48,19 @@ export const TransactionCreateScreen = () => {
   routerRef.current = router;
 
   const isFocused = useIsFocused();
-  const params = useLocalSearchParams<{ parsedTransaction: string }>();
+  const params = useLocalSearchParams<{
+    id_transactions?: string;
+    id_users?: string;
+  }>();
+  const {
+    data: { activeUserId }
+  } = useUser();
 
-  const parsedTransaction = JSON.parse(params?.parsedTransaction ?? "{}");
-  const { id_transactions, id_users } = parsedTransaction;
+  const id_transactions = parsePositiveIntRouteParam(params.id_transactions);
+  const routeUserId = parsePositiveIntRouteParam(params.id_users);
+  const id_users = routeUserId ?? activeUserId;
 
-  const isEditMode = !!(id_transactions && id_users);
+  const isEditMode = id_transactions !== null;
 
   const {
     data: relationsData,
@@ -136,14 +144,22 @@ export const TransactionCreateScreen = () => {
   }, [isEditMode, isFocused, relationsLoading, relationsData]);
 
   useEffect(() => {
-    const raw = id_transactions;
-    if (raw == null || raw === "") return;
+    if (params.id_transactions == null) return;
     if (id_transactions === null) {
       Alert.alert("Identificador inválido", "O id da transação na URL não é válido.", [
         { text: "OK", onPress: () => router.back() }
       ]);
     }
-  }, [id_transactions, router]);
+  }, [id_transactions, params.id_transactions, router]);
+
+  useEffect(() => {
+    if (params.id_users == null) return;
+    if (routeUserId === null) {
+      Alert.alert("Usuário inválido", "O id do usuário na URL não é válido.", [
+        { text: "OK", onPress: () => router.back() }
+      ]);
+    }
+  }, [params.id_users, routeUserId, router]);
 
   useEffect(() => {
     if (!attachmentsError) return;
@@ -172,6 +188,10 @@ export const TransactionCreateScreen = () => {
 
     try {
       setIsSaving(true);
+      if (id_users == null) {
+        throw new Error("Usuário ativo não encontrado para salvar anexos");
+      }
+
       const payload: CreateTransactionPayload = {
         selectedCategory: selectedCategoryId,
         amount: amountInMajorUnits,
@@ -182,11 +202,11 @@ export const TransactionCreateScreen = () => {
         attachmentsCount: attachmentItemsCount,
         id_users,
       };
-      if (id_users == null) {
-        throw new Error("Usuário ativo não encontrado para salvar anexos");
-      }
 
       if (isEditMode) {
+        if (id_transactions == null) {
+          throw new Error("Transação não encontrada para atualização");
+        }
         await updateTransaction(id_transactions, payload);
         await commitAttachmentDrafts(id_transactions, id_users);
       } else {

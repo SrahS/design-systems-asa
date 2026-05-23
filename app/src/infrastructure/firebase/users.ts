@@ -55,7 +55,6 @@ const mapDocumentToUser = (docId: string, raw: Record<string, unknown>): User =>
     id_users,
     name,
     login,
-    password: "",
     budget: Number.isFinite(budget) ? budget : 0,
     created_at: timestampOrStringToIso(raw.created_at),
     updated_at: toUpdatedAt(raw.updated_at),
