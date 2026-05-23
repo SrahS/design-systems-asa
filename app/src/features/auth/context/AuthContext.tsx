@@ -6,11 +6,11 @@ import React, {
   useState,
 } from "react";
 import {
-  clearPersistedAuthTokenResponse,
-  persistAuthTokenResponse,
-} from "@/features/auth/authTokenStorage";
+  signInUseCase,
+  signOutUseCase,
+} from "@/application/usecases/defaultUseCases";
 import { authService, type AuthUser } from "@/services/authService";
-import type { AuthTokenResponse } from "@/types/auth";
+import type { AuthSession } from "@/domain/ports/AuthRepository";
 
 export type AuthContextValue = {
   user: AuthUser | null;
@@ -21,7 +21,7 @@ export type AuthContextValue = {
     email: string,
     password: string
   ) => Promise<
-    | { ok: true; tokenResponse: AuthTokenResponse }
+    | { ok: true; session: AuthSession }
     | { ok: false; message: string }
   >;
   signOut: () => Promise<void>;
@@ -49,11 +49,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signIn = useCallback(async (email: string, password: string) => {
     setError(null);
     try {
-      const tokenResponse = await authService.signIn(email, password);
-      await persistAuthTokenResponse(tokenResponse);
-      return { ok: true as const, tokenResponse };
+      const session = await signInUseCase.execute(email, password);
+      return { ok: true as const, session };
     } catch (err) {
-      const message = authService.mapAuthError(err);
+      const message = signInUseCase.mapError(err);
       setError(message);
       return { ok: false as const, message };
     }
@@ -61,8 +60,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = useCallback(async () => {
     setError(null);
-    await clearPersistedAuthTokenResponse();
-    await authService.signOut();
+    await signOutUseCase.execute();
   }, []);
 
   const value = useMemo(

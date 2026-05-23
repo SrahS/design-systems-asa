@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { attachmentsTransactionService } from "@/services";
-import { toTransactionAttachment } from "@/hooks/domains/adapters";
+import { toTransactionAttachment } from "@/features/transactions/presenters/transactionPresenters";
 import { useTransactionAttachments } from "@/hooks/domains";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { TransactionHeader } from "../../components/TransactionHeader";

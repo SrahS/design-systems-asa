@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   getReferenceDate,
-  toMonthLabel,
   toTransactionListItem
-} from "@/hooks/domains/adapters";
+} from "@/features/transactions/presenters/transactionPresenters";
+import {
+  toMonthLabel,
+} from "@/features/dashboard/presenters/dashboardPresenters";
 import { useCategories, useTransactions } from "@/hooks/domains";
 import { getPersistedAppUser } from "@/features/auth/authTokenStorage";
 import type { TransactionListItem } from "../types/TransactionListItem";

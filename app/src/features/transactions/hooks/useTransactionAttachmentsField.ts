@@ -1,5 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
-import { inferAttachmentType, toTransactionAttachment } from "@/hooks/domains/adapters";
+import {
+  inferAttachmentType,
+  toTransactionAttachment,
+} from "@/features/transactions/presenters/transactionPresenters";
+import { uploadAttachmentUseCase } from "@/application/usecases/defaultUseCases";
 import { useTransactionAttachments } from "@/hooks/domains";
 import { attachmentsTransactionService } from "@/services";
 import type { AttachmentDraft } from "@/types/attachmentTransaction";
@@ -116,8 +120,14 @@ export const useTransactionAttachmentsField = (params: Params) => {
       setActionLoading(true);
       setActionError(null);
       try {
-        await attachmentsTransactionService.commitDraftsForTransaction(
-          drafts,
+        await uploadAttachmentUseCase.commitDraftsForTransaction(
+          drafts.map((draft) => ({
+            clientId: draft.clientId,
+            transactionId: draft.id_transactions,
+            fileName: draft.file_name,
+            mimeType: draft.mimeType,
+            uri: draft.uri
+          })),
           transactionId,
           userId
         );

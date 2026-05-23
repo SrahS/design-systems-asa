@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { transactionsService } from "@/services";
+import { createTransactionUseCase } from "@/application/usecases/defaultUseCases";
+import { toLegacyTransaction } from "@/application/adapters/legacyMappers";
 import type { CreateTransactionPayload } from "../types/TransactionPayload";
 
 export const useCreateTransaction = () => {
@@ -11,15 +12,16 @@ export const useCreateTransaction = () => {
         throw new Error("Usuário ativo não encontrado para cadastrar transação");
       }
 
-      return transactionsService.createTransaction({
+      const transaction = await createTransactionUseCase.execute({
         userId: id_users,
         categoryId: payload.selectedCategory,
         amount: payload.amount,
         description: payload.description,
-        occured_at: payload.occured_at,
+        occurredAt: payload.occured_at,
         notes: payload.notes,
         attachmentsCount: payload.attachmentsCount
       });
+      return toLegacyTransaction(transaction);
     },
     []
   );

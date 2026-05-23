@@ -1,7 +1,7 @@
 import { Text, View, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "@/theme";
-import { toAmountCents } from "@/hooks/domains/adapters";
+import { toAmountCents } from "@/features/transactions/presenters/transactionPresenters";
 import type { Transaction } from "@/types/transaction";
 import type { RecentTransaction } from "@/types/RecentTransaction";
 import { formatMoneyFromCents } from "@/utils/format";

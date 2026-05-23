@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { transactionsService } from "@/services";
+import { excludeTransactionUseCase } from "@/application/usecases/defaultUseCases";
 
 export const useExcludeTransaction = () => {
 
@@ -9,7 +9,7 @@ export const useExcludeTransaction = () => {
         throw new Error("Usuário ativo não encontrado para excluir transação");
       }
 
-      await transactionsService.excludeTransaction({
+      await excludeTransactionUseCase.execute({
         transactionId,
         userId,
       });

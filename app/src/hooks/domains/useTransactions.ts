@@ -7,9 +7,10 @@ import {
 } from "react";
 import {
   getTransactionsRevision,
-  subscribeTransactionsChanged,
-  transactionsService
+  subscribeTransactionsChanged
 } from "@/services";
+import { listTransactionsUseCase } from "@/application/usecases/defaultUseCases";
+import { toLegacyTransaction } from "@/application/adapters/legacyMappers";
 import type { Transaction } from "../../types/transaction";
 
 export const useTransactions = (userId: number | null) => {
@@ -30,10 +31,10 @@ export const useTransactions = (userId: number | null) => {
       setLoading(true);
       setError(null);
       try {
-        const list = await transactionsService.getTransactions(userId);
+        const list = await listTransactionsUseCase.execute(userId);
 
         if (!cancelled) {
-          setTransactions(list);
+          setTransactions(list.map(toLegacyTransaction));
         }
       } catch (e) {
         if (!cancelled) {
