@@ -1,10 +1,4 @@
-import {
-  attachmentRepository,
-  authRepository,
-  categoryRepository,
-  sessionStorage,
-  transactionRepository,
-} from "../adapters/serviceRepositories";
+import { applicationRepositories } from "../container";
 import { CreateTransaction } from "./CreateTransaction";
 import { ExcludeTransaction } from "./ExcludeTransaction";
 import { GetDashboard } from "./GetDashboard";
@@ -13,6 +7,14 @@ import { SignIn } from "./SignIn";
 import { SignOut } from "./SignOut";
 import { UpdateTransaction } from "./UpdateTransaction";
 import { UploadAttachment } from "./UploadAttachment";
+
+const {
+  attachmentRepository,
+  authRepository,
+  categoryRepository,
+  sessionStorage,
+  transactionRepository,
+} = applicationRepositories;
 
 export const listTransactionsUseCase = new ListTransactions(
   transactionRepository

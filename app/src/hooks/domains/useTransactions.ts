@@ -8,7 +8,7 @@ import {
 import {
   getTransactionsRevision,
   subscribeTransactionsChanged
-} from "@/services";
+} from "@/infrastructure/firebase";
 import { listTransactionsUseCase } from "@/application/usecases/defaultUseCases";
 import { toLegacyTransaction } from "@/application/adapters/legacyMappers";
 import type { Transaction } from "../../types/transaction";

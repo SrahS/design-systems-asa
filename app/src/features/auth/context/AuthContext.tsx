@@ -5,12 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { applicationRepositories } from "@/application";
 import {
   signInUseCase,
   signOutUseCase,
 } from "@/application/usecases/defaultUseCases";
-import { authService, type AuthUser } from "@/services/authService";
-import type { AuthSession } from "@/domain/ports/AuthRepository";
+import type { AuthSession, AuthUser } from "@/domain/ports/AuthRepository";
 
 export type AuthContextValue = {
   user: AuthUser | null;
@@ -39,10 +39,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = authService.observeAuthState((nextUser) => {
-      setUser(nextUser);
-      setLoading(false);
-    });
+    const unsubscribe = applicationRepositories.authRepository.observeAuthState(
+      (nextUser) => {
+        setUser(nextUser);
+        setLoading(false);
+      }
+    );
     return unsubscribe;
   }, []);
 

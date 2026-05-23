@@ -64,3 +64,5 @@ export const categoriesService = {
   getCategoriesMap,
   getCategoryById
 };
+
+export type CategoriesService = typeof categoriesService;

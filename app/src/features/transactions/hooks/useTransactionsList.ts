@@ -7,7 +7,7 @@ import {
   toMonthLabel,
 } from "@/features/dashboard/presenters/dashboardPresenters";
 import { useCategories, useTransactions } from "@/hooks/domains";
-import { getPersistedAppUser } from "@/features/auth/authTokenStorage";
+import { getPersistedAppUser } from "@/infrastructure/storage";
 import type { TransactionListItem } from "../types/TransactionListItem";
 
 export const useTransactionsList = () => {

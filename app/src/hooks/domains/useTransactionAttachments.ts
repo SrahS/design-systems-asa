@@ -3,7 +3,7 @@ import {
   attachmentsTransactionService,
   getAttachmentsRevision,
   subscribeAttachmentsChanged
-} from "@/services";
+} from "@/infrastructure/firebase";
 import type { AttachmentTransaction } from "../../types/attachmentTransaction";
 
 export const useTransactionAttachments = (userId: number | null) => {

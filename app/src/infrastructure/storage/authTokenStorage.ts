@@ -108,3 +108,15 @@ export const getPersistedAppUser = async (): Promise<User | null> => {
     return null;
   }
 };
+
+export const authTokenStorage = {
+  persistAuthTokenResponse,
+  clearPersistedAuthTokenResponse,
+  getPersistedAuthTokenResponse,
+  persistAppUser,
+  clearPersistedAppUser,
+  clearAllPersistedAuth,
+  getPersistedAppUser,
+};
+
+export type AuthTokenStorage = typeof authTokenStorage;

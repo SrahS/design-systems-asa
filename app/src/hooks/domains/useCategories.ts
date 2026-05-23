@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { categoriesService } from "@/services";
+import { categoriesService } from "@/infrastructure/firebase";
 import type { Category } from "../../types/category";
 
 export const useCategories = () => {

@@ -5,7 +5,7 @@ import {
 } from "@/features/transactions/presenters/transactionPresenters";
 import { uploadAttachmentUseCase } from "@/application/usecases/defaultUseCases";
 import { useTransactionAttachments } from "@/hooks/domains";
-import { attachmentsTransactionService } from "@/services";
+import { attachmentsTransactionService } from "@/infrastructure/firebase";
 import type { AttachmentDraft } from "@/types/attachmentTransaction";
 import type { TransactionAttachment } from "../types/TransactionDetail";
 import { pickAttachment } from "../infra/pickAttachment";

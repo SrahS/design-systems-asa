@@ -5,7 +5,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { getPersistedAuthTokenResponse } from "@/features/auth/authTokenStorage";
+import { getPersistedAuthTokenResponse } from "@/infrastructure/storage";
 import type { User } from "@/types/user";
 import { timestampOrStringToIso } from "@/utils/firestoreDate";
 import { db } from "./firebase";
@@ -108,3 +108,5 @@ export const usersService = {
   getUserByFirestoreLogin,
   getAppUserFromPersistedToken,
 };
+
+export type UsersService = typeof usersService;

@@ -340,3 +340,5 @@ export const transactionsService = {
   applyAttachmentCount,
   excludeTransaction
 };
+
+export type TransactionsService = typeof transactionsService;
