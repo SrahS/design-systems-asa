@@ -154,3 +154,84 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@layer base {
+  /* ============================================================
+   * HACKATHON SENIOREASE: PREFERÊNCIAS DE ACESSIBILIDADE
+   * Regras aplicadas dinamicamente pelo AccessibilityContext.tsx
+   * ============================================================ */
+
+  /* --------------------------------------------------
+   * 1. TAMANHO DAS LETRAS (Font Size Multipliers)
+   * Aumenta todas as variáveis de texto do sistema
+   * -------------------------------------------------- */
+  
+  .font-large-mode {
+    --font-size-xs: 0.875rem; /* 14px */
+    --font-size-sm: 1rem;     /* 16px */
+    --font-size-md: 1.125rem; /* 18px */
+    --font-size-lg: 1.375rem; /* 22px */
+    --font-size-xl: 1.75rem;  /* 28px */
+    --font-size-xxl: 2.125rem;/* 34px */
+    --font-size-display: 3rem;/* 48px */
+  }
+
+  .font-extra-large-mode {
+    --font-size-xs: 1rem;     /* 16px */
+    --font-size-sm: 1.125rem; /* 18px */
+    --font-size-md: 1.375rem; /* 22px */
+    --font-size-lg: 1.75rem;  /* 28px */
+    --font-size-xl: 2.125rem; /* 34px */
+    --font-size-xxl: 2.5rem;  /* 40px */
+    --font-size-display: 3.5rem;/* 56px */
+  }
+
+  /* --------------------------------------------------
+   * 2. ALTO CONTRASTE (High Contrast Mode)
+   * Modifica as cores de superfície e texto para focar 
+   * em legibilidade máxima (Preto, Branco e Amarelo).
+   * -------------------------------------------------- */
+  
+  .contrast-high {
+    /* Força fundo preto absoluto e texto branco puro */
+    --color-background: #000000;
+    --color-surface: #000000;
+    --color-surface-2: #1a1a1a;
+    --color-surface-3: #2d2d2d;
+    --color-text: #ffffff;
+    --color-text-muted: #e0e0e0; /* Aumentado de 65% para texto quase branco */
+    --color-text-subtle: #cccccc;
+
+    /* Bordas brancas fortíssimas para delimitar áreas */
+    --color-stroke: #ffffff;
+    --color-pill-stroke: #ffffff;
+
+    /* Brand Accent: Substitui os roxos e cyans por Amarelo de Alto Contraste */
+    --color-primary: #ffff00;
+    --color-primary-hover: #e6e600;
+    
+    /* Cores Semânticas com maior luminância */
+    --color-danger: #ff6b6b;
+    --color-success: #4ade80;
+
+    /* Força as categorias a usarem o padrão de alto contraste */
+    --color-category-deposit-card: rgba(255, 255, 0, 0.1);
+    --color-category-deposit-border: #ffff00;
+    --color-category-withdraw-border: #ffffff;
+    --color-category-transfer-border: #ffffff;
+  }
+
+  /* Aplicação das variáveis de alto contraste nos botões que usarem o amarelo */
+  .contrast-high .bg-primary {
+    color: #000000 !important; /* Botões amarelos precisam de texto preto para WCAG AAA */
+  }
+
+  /* --------------------------------------------------
+   * 3. MODO SIMPLIFICADO (Layout Mode)
+   * Esconde elementos não essenciais via CSS global
+   * -------------------------------------------------- */
+  
+  .layout-simplified .hide-on-simplified {
+    display: none !important;
+  }
+}
