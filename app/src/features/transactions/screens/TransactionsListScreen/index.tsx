@@ -126,14 +126,8 @@ export const TransactionsListScreen = () => {
   }, []);
 
   const handleCreateTransaction = useCallback(() => {
-    const parsedTransaction = {
-      id_users: visibleItems[0]?.id_users
-    }
-    router.push({
-      pathname: "/transactions/create",
-      params: {parsedTransaction: JSON.stringify(parsedTransaction)},
-    });
-  }, [visibleItems, router]);
+    router.push("/transactions/create");
+  }, [router]);
 
   const renderEmptyState = useCallback(() => {
     if (hasActiveFilters) {
@@ -175,7 +169,7 @@ export const TransactionsListScreen = () => {
               currency={data.currency}
               onPress={() => router.push({
                 pathname: `/transactions/${item.id_transactions}`,
-                params: { transaction: JSON.stringify(item) }
+                params: { id_users: String(item.id_users) }
               })}
             />
           )}

@@ -24,4 +24,4 @@ npm run web
 ## Observações
 
 - A navegação e o layout raiz ficam em `app/_layout.tsx`.
-- O acesso ao Firebase (Auth/Firestore/Storage) está em `src/services/firebase.ts`.
+- O acesso ao Firebase (Auth/Firestore/Storage) está em `src/infrastructure/firebase/firebase.ts`.

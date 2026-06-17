@@ -101,3 +101,5 @@ export const authService = {
   observeAuthState,
   mapAuthError,
 };
+
+export type AuthService = typeof authService;

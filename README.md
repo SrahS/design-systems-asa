@@ -80,7 +80,7 @@ docker compose up --build
 
 ## Projeto App — React Native / Expo (`app/`)
 
-App **AppFobos** com autenticação e dados no Firebase. A configuração do cliente está em `app/src/services/firebase.ts`.
+App **AppFobos** com autenticação e dados no Firebase. A configuração do cliente está em `app/src/infrastructure/firebase/firebase.ts`.
 
 ### 1. Instalar dependências
 

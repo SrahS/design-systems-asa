@@ -1,38 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   getReferenceDate,
-  toMonthLabel,
   toTransactionListItem
-} from "@/hooks/domains/adapters";
-import { useCategories, useTransactions } from "@/hooks/domains";
-import { getPersistedAppUser } from "@/features/auth/authTokenStorage";
+} from "@/features/transactions/presenters/transactionPresenters";
+import {
+  toMonthLabel,
+} from "@/features/dashboard/presenters/dashboardPresenters";
+import { useCategories, useTransactions, useUser } from "@/hooks/domains";
 import type { TransactionListItem } from "../types/TransactionListItem";
 
 export const useTransactionsList = () => {
-  const [persistedUserId, setPersistedUserId] = useState<number | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadPersistedUser = async () => {
-      const user = await getPersistedAppUser();
-
-      if (!cancelled) {
-        setPersistedUserId(user?.id_users ?? null);
-      }
-    };
-
-    void loadPersistedUser();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const {
+    data: { activeUserId },
+    loading: activeUserLoading
+  } = useUser();
 
   const {
     data: { transactions },
-    loading: userLoading
-  } = useTransactions(persistedUserId);
+    loading: transactionsLoading
+  } = useTransactions(activeUserId);
   const {
     data: { getById: getCategoryById }
   } = useCategories();
@@ -51,8 +37,8 @@ export const useTransactionsList = () => {
       monthLabel: toMonthLabel(transactions),
       currency: "BRL" as const,
       items,
-      userLoading
+      userLoading: activeUserLoading || transactionsLoading
     };
-  }, [getCategoryById, transactions, userLoading]);
+  }, [activeUserLoading, getCategoryById, transactions, transactionsLoading]);
 };
 

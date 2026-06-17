@@ -1,24 +1,60 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import type { AuthTokenResponse } from "@/types/auth";
 import type { User } from "@/types/user";
 
-const AUTH_TOKEN_RESPONSE_KEY = "@appfobos/auth/tokenResponse";
-const APP_USER_KEY = "@appfobos/auth/appUser";
+const LEGACY_AUTH_TOKEN_RESPONSE_KEY = "@appfobos/auth/tokenResponse";
+const LEGACY_APP_USER_KEY = "@appfobos/auth/appUser";
+const AUTH_TOKEN_RESPONSE_KEY = "appfobos.auth.tokenResponse";
+const APP_USER_KEY = "appfobos.auth.appUser";
+
+const getStoredValue = async (
+  key: string,
+  legacyKey: string
+): Promise<string | null> => {
+  const secureValue = await SecureStore.getItemAsync(key);
+  if (secureValue != null && secureValue !== "") {
+    return secureValue;
+  }
+
+  const legacyValue = await AsyncStorage.getItem(legacyKey);
+  if (legacyValue == null || legacyValue === "") {
+    return null;
+  }
+
+  await SecureStore.setItemAsync(key, legacyValue);
+  await AsyncStorage.removeItem(legacyKey);
+  return legacyValue;
+};
+
+const deleteStoredValue = async (
+  key: string,
+  legacyKey: string
+): Promise<void> => {
+  await Promise.all([
+    SecureStore.deleteItemAsync(key),
+    AsyncStorage.removeItem(legacyKey),
+  ]);
+};
 
 export const persistAuthTokenResponse = async (
   data: AuthTokenResponse
 ): Promise<void> => {
-  await AsyncStorage.setItem(AUTH_TOKEN_RESPONSE_KEY, JSON.stringify(data));
+  await SecureStore.setItemAsync(AUTH_TOKEN_RESPONSE_KEY, JSON.stringify(data));
+  await AsyncStorage.removeItem(LEGACY_AUTH_TOKEN_RESPONSE_KEY);
 };
 
 export const clearPersistedAuthTokenResponse = async (): Promise<void> => {
-  await AsyncStorage.removeItem(AUTH_TOKEN_RESPONSE_KEY);
+  await deleteStoredValue(AUTH_TOKEN_RESPONSE_KEY, LEGACY_AUTH_TOKEN_RESPONSE_KEY);
 };
 
 export const getPersistedAuthTokenResponse =
   async (): Promise<AuthTokenResponse | null> => {
     try {
-      const raw = await AsyncStorage.getItem(AUTH_TOKEN_RESPONSE_KEY);
+      const raw = await getStoredValue(
+        AUTH_TOKEN_RESPONSE_KEY,
+        LEGACY_AUTH_TOKEN_RESPONSE_KEY
+      );
       if (raw == null || raw === "") {
         return null;
       }
@@ -41,11 +77,12 @@ export const getPersistedAuthTokenResponse =
   };
 
 export const persistAppUser = async (user: User): Promise<void> => {
-  await AsyncStorage.setItem(APP_USER_KEY, JSON.stringify(user));
+  await SecureStore.setItemAsync(APP_USER_KEY, JSON.stringify(user));
+  await AsyncStorage.removeItem(LEGACY_APP_USER_KEY);
 };
 
 export const clearPersistedAppUser = async (): Promise<void> => {
-  await AsyncStorage.removeItem(APP_USER_KEY);
+  await deleteStoredValue(APP_USER_KEY, LEGACY_APP_USER_KEY);
 };
 
 export const clearAllPersistedAuth = async (): Promise<void> => {
@@ -66,9 +103,6 @@ const isPersistedUserShape = (parsed: unknown): parsed is User => {
   if (typeof o.name !== "string" || typeof o.login !== "string") {
     return false;
   }
-  if (typeof o.password !== "string") {
-    return false;
-  }
   if (typeof o.budget !== "number" || !Number.isFinite(o.budget)) {
     return false;
   }
@@ -83,7 +117,7 @@ const isPersistedUserShape = (parsed: unknown): parsed is User => {
 
 export const getPersistedAppUser = async (): Promise<User | null> => {
   try {
-    const raw = await AsyncStorage.getItem(APP_USER_KEY);
+    const raw = await getStoredValue(APP_USER_KEY, LEGACY_APP_USER_KEY);
     if (raw == null || raw === "") {
       return null;
     }
@@ -99,7 +133,6 @@ export const getPersistedAppUser = async (): Promise<User | null> => {
       id_users: parsed.id_users,
       name: parsed.name,
       login,
-      password: parsed.password,
       budget: parsed.budget,
       created_at: parsed.created_at,
       updated_at: parsed.updated_at,
@@ -108,3 +141,15 @@ export const getPersistedAppUser = async (): Promise<User | null> => {
     return null;
   }
 };
+
+export const authTokenStorage = {
+  persistAuthTokenResponse,
+  clearPersistedAuthTokenResponse,
+  getPersistedAuthTokenResponse,
+  persistAppUser,
+  clearPersistedAppUser,
+  clearAllPersistedAuth,
+  getPersistedAppUser,
+};
+
+export type AuthTokenStorage = typeof authTokenStorage;

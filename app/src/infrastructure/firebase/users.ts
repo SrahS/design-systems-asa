@@ -5,7 +5,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { getPersistedAuthTokenResponse } from "@/features/auth/authTokenStorage";
+import { getPersistedAuthTokenResponse } from "@/infrastructure/storage";
 import type { User } from "@/types/user";
 import { timestampOrStringToIso } from "@/utils/firestoreDate";
 import { db } from "./firebase";
@@ -55,7 +55,6 @@ const mapDocumentToUser = (docId: string, raw: Record<string, unknown>): User =>
     id_users,
     name,
     login,
-    password: "",
     budget: Number.isFinite(budget) ? budget : 0,
     created_at: timestampOrStringToIso(raw.created_at),
     updated_at: toUpdatedAt(raw.updated_at),
@@ -108,3 +107,5 @@ export const usersService = {
   getUserByFirestoreLogin,
   getAppUserFromPersistedToken,
 };
+
+export type UsersService = typeof usersService;

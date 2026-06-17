@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { persistAppUser } from "@/features/auth/authTokenStorage";
+import { persistAppUser } from "@/infrastructure/storage";
 import { useAuth } from "@/hooks/useAuth";
-import { usersService } from "@/services";
+import { usersService } from "@/infrastructure/firebase";
 import type { ActiveUser } from "../../types/activeUser";
 import type { User } from "../../types/user";
 

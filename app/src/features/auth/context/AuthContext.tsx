@@ -5,12 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { applicationRepositories } from "@/application";
 import {
-  clearPersistedAuthTokenResponse,
-  persistAuthTokenResponse,
-} from "@/features/auth/authTokenStorage";
-import { authService, type AuthUser } from "@/services/authService";
-import type { AuthTokenResponse } from "@/types/auth";
+  signInUseCase,
+  signOutUseCase,
+} from "@/application/usecases/defaultUseCases";
+import type { AuthSession, AuthUser } from "@/domain/ports/AuthRepository";
 
 export type AuthContextValue = {
   user: AuthUser | null;
@@ -21,7 +21,7 @@ export type AuthContextValue = {
     email: string,
     password: string
   ) => Promise<
-    | { ok: true; tokenResponse: AuthTokenResponse }
+    | { ok: true; session: AuthSession }
     | { ok: false; message: string }
   >;
   signOut: () => Promise<void>;
@@ -39,21 +39,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = authService.observeAuthState((nextUser) => {
-      setUser(nextUser);
-      setLoading(false);
-    });
+    const unsubscribe = applicationRepositories.authRepository.observeAuthState(
+      (nextUser) => {
+        setUser(nextUser);
+        setLoading(false);
+      }
+    );
     return unsubscribe;
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
     setError(null);
     try {
-      const tokenResponse = await authService.signIn(email, password);
-      await persistAuthTokenResponse(tokenResponse);
-      return { ok: true as const, tokenResponse };
+      const session = await signInUseCase.execute(email, password);
+      return { ok: true as const, session };
     } catch (err) {
-      const message = authService.mapAuthError(err);
+      const message = signInUseCase.mapError(err);
       setError(message);
       return { ok: false as const, message };
     }
@@ -61,8 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = useCallback(async () => {
     setError(null);
-    await clearPersistedAuthTokenResponse();
-    await authService.signOut();
+    await signOutUseCase.execute();
   }, []);
 
   const value = useMemo(

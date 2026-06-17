@@ -244,3 +244,6 @@ export const attachmentsTransactionService = {
   softDeleteAttachment,
   commitDraftsForTransaction
 };
+
+export type AttachmentsTransactionService =
+  typeof attachmentsTransactionService;
